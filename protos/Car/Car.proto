@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package Car;
+
+message CarSchema{
+  int32 id = 1;
+  string plate = 2;
+  string mark = 3;
+  string model = 4;
+  string vin = 5;
+  string year = 6;
+  int32 client_id = 7;
+}
+
+message GetCarRequest{
+  int32 id = 1;
+}
+
+message GetCarResponse{
+  CarSchema car = 1;
+}
+
+message SetCarRequest{
+  CarSchema car = 1;
+}
+
+message SetCarResponse{
+  CarSchema car = 1;
+}
+
+message UpdateCarRequest{
+  CarSchema car = 1;
+}
+
+message UpdateCarResponse{
+  CarSchema car = 1;
+}
+
+message DeleteCarRequest{
+  int32 id = 1;
+}
+
+message DeleteCarResponse{
+  bool deleted = 1;
+}
+
+service Car{
+  //Un
+  rpc GetCar (GetCarRequest) returns (GetCarResponse) {};
+
+  rpc SetCar (SetCarRequest) returns (SetCarResponse) {};
+
+  rpc UpdateCar (UpdateCarRequest) returns (UpdateCarResponse) {};
+
+  rpc DeleteCar (DeleteCarRequest) returns (DeleteCarResponse) {};
+}
+

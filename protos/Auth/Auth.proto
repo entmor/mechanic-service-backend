@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package Auth;
+
+import "Schema/UserSchema.proto";
+
+message GetAuthRequest{
+  string token = 1;
+  string type = 2;
+}
+
+message GetAuthResponse{
+  string token = 1;
+  Schema.UserSchema user = 2;
+}
+
+message SetAuthRequest{
+  string email = 1;
+  string password = 2;
+  string type = 3;
+}
+
+message SetAuthResponse{
+  string token = 1;
+  Schema.UserSchema user = 2;
+}
+
+service Auth{
+  //Un
+  rpc GetAuth (GetAuthRequest) returns (GetAuthResponse) {};
+
+  rpc SetAuth (SetAuthRequest) returns (SetAuthResponse) {};
+}
+

@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    env_file:
+      - ./build/environments/development.env
+    ports:
+      - "27018:27017"
+#  mysql-db:
+#    env_file:
+#      - ./build/production.env
+#  #####
+#  user-service:
+#    ports:
+#      - 50051:50050
+#    env_file:
+#      - ./build/production.env
+#    volumes:
+#      - ./services/UserService/src:/core/services/UserService/src/
+#      - ./helpers:/core/helpers
+#  #####
+#  auth-service:
+#    ports:
+#      - 50052:50050
+  #####
+#  adminer:
+#    image: adminer
+#    restart: always
+#    ports:
+#      - 8080:8080
+

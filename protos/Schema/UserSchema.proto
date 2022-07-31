@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package Schema;
+
+enum Gender {
+  GENDER_UNKNOWN = 0;
+  GENDER_MALE = 1;
+  GENDER_FEMALE = 2;
+  GENDER_DIVERS = 3;
+}
+
+message UserSchema{
+  int32 id = 1;
+  string firstname = 2;
+  string lastname = 3;
+  string email = 4;
+  string password = 5;
+  string role = 6;
+  string status = 7;
+  Gender gender = 8;
+  string phone = 9;
+  string street = 10;
+  string city = 11;
+  string zip_code = 12;
+  string country = 13;
+  string birthday = 14;
+  int64 created_at = 15;
+  int64 updated_at = 16;
+}

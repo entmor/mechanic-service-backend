@@ -1,0 +1,86 @@
+version: "3.9"
+
+services:
+  redis-server:
+    container_name: redis
+    hostname: redis
+    build:
+      context: db/redis/build
+      dockerfile: redis.dockerfile
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./db/redis/dump:/data
+  user-service:
+    image: carservice:latest
+    container_name: "car-service"
+    hostname: car-service
+    restart: always
+    depends_on:
+      - mongo
+    command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --transpile-only --files ./services/CarService/src/carService.ts' ]
+    volumes:
+      - ./services/CarService/src:/core/services/CarService/src/
+    env_file:
+      - ./build/environments/development.env
+  ####
+#  mysql-db:
+#    image: mysql
+#    command: --default-authentication-plugin=mysql_native_password
+#    restart: always
+#    hostname: mysql
+#    ports:
+#      - 3306:3306
+#    env_file:
+#      - ./build/default.env
+  ####
+#  api-gateway:
+#    image: course:latest
+#    container_name: "api-gateway"
+#    hostname: apigateway
+#    command: [ 'sh', '-c', './build/wait-for/wait-for mysql:3306 -- npm run ts-node-dev --respawn --transpile-only --files ./services/ApiService/src/index.ts' ]
+#    volumes:
+#      - ./services/ApiService/src:/core/services/ApiService/src/
+#    env_file:
+#      - ./build/default.env
+#    ports:
+#      - 3000:3000
+  ####
+#  mailer-service:
+#    image: course:latest
+#    container_name: "mailer-service"
+#    hostname: mailer-service
+#    depends_on:
+#      - mysql-db
+#      - redis-server
+#    command: [ 'sh', '-c', './build/wait-for/wait-for redis-server:6379 -- npm run ts-node-dev --respawn --transpile-only --files ./services/MailerService/services/mailerService.ts']
+#    volumes:
+#      - ./services/MailerService/:/core/services/MailerService/
+#    env_file:
+#      - ./build/default.env
+  ####
+#  user-service:
+#    image: course:latest
+#    container_name: "user-service"
+#    hostname: user-service
+#    restart: always
+#    depends_on:
+#      - mysql-db
+#    command: [ 'sh', '-c', './build/wait-for/wait-for mysql:3306 -- npm run ts-node-dev --respawn --transpile-only --files ./services/UserService/src/userService.ts' ]
+#    volumes:
+#      - ./services/UserService/src:/core/services/UserService/src/
+#    env_file:
+#      - ./build/default.env
+  ####
+#  auth-service:
+#    image: course:latest
+#    container_name: "auth-service"
+#    hostname: auth-service
+#    depends_on:
+#      - mysql-db
+#      - redis-server
+#    command: [ 'sh', '-c', './build/wait-for/wait-for mysql:3306 -- ./build/wait-for/wait-for redis-server:6379 -- npm run ts-node-dev --respawn --transpile-only --files ./services/AuthService/src/authService.ts' ]
+#    volumes:
+#      - ./services/AuthService/src:/core/services/AuthService/src/
+#    env_file:
+#      - ./build/default.env
