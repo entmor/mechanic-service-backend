@@ -3,13 +3,15 @@ syntax = "proto3";
 package Car;
 
 message CarSchema{
-  int32 id = 1;
+  string id = 1;
   string plate = 2;
   string mark = 3;
   string model = 4;
   string vin = 5;
   string year = 6;
-  int32 client_id = 7;
+  string client_id = 7;
+  int64 created_at = 8;
+  int64 updated_at = 9;
 }
 
 message GetCarRequest{
