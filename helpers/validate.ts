@@ -3,6 +3,7 @@ import { Status } from '@grpc/grpc-js/src/constants';
 import Joi from 'joi';
 import { removeEmptyProperties } from './object';
 
+interface Option {
     removeId?: boolean;
     removeEmptyProperties?: boolean;
 }
