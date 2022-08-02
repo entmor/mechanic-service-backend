@@ -1,7 +1,8 @@
+import { Status } from '@grpc/grpc-js/src/constants';
+
 import Joi from 'joi';
 import { removeEmptyProperties } from './object';
 
-interface Option {
     removeId?: boolean;
     removeEmptyProperties?: boolean;
 }
@@ -41,7 +42,7 @@ export const JoiValidator = async <T, TReturn>(
 
     if (error) {
         await Promise.reject({
-            code: 3,
+            code: Status.INVALID_ARGUMENT,
             message: error.message,
         });
     }

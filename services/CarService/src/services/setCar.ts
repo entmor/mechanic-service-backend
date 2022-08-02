@@ -1,19 +1,35 @@
 import * as grpc from '@grpc/grpc-js';
-import { CarSchema, GetCarRequest, GetCarResponse } from '../../../../grpc/Car/Car_pb';
+import { CarSchema, SetCarRequest, SetCarResponse } from '../../../../grpc/Car/Car_pb';
 import { MongoDb } from '../../../../middleware/Mongodb';
 import { fromJsonToGrpc } from '../../../../helpers/grpc';
 import { Car } from '../../../../interface/car';
-import { ObjectId } from 'mongodb';
+import { JoiValidator } from '../../../../helpers/validate';
+import { SetCarValidator } from '../models/validator';
 
-type Call = grpc.ServerUnaryCall<GetCarRequest, GetCarResponse>;
-type Callback = grpc.sendUnaryData<GetCarResponse>;
+type Call = grpc.ServerUnaryCall<SetCarRequest, SetCarResponse>;
+type Callback = grpc.sendUnaryData<SetCarResponse>;
 
-export const getCar = (mongodb: MongoDb) => {
+type CarValidated = Omit<Car, 'id' | 'updateAt' | 'createAt'>;
+
+export const setCar = (mongodb: MongoDb) => {
     return async ({ request }: Call, callback: Callback): Promise<void> => {
         try {
-            /** GET CAR FROM DATABASE **/
-            const carId = new ObjectId(request.getId());
-            const carObject = await mongodb.collection.findOne(carId);
+            /**
+             * GET CAR FROM GRPC && VALIDATE
+             */
+            const carObjectFromGRPC = request.getCar().toObject();
+            const carValidated = await JoiValidator<CarValidated, CarValidated>(
+                SetCarValidator,
+                carObjectFromGRPC,
+                {
+                    removeId: true,
+                    removeEmptyProperties: true,
+                }
+            );
+
+            await mongodb.collection.insertOne({
+                ...carValidated,
+            })
 
             if (carObject === null) {
                 /** SEND RESPONSE_ERROR [GET_CAR] **/
@@ -27,7 +43,7 @@ export const getCar = (mongodb: MongoDb) => {
                     getTimeChange: true,
                 });
 
-                const responseGRPC = new GetCarResponse();
+                const responseGRPC = new SetCarResponse();
                 responseGRPC.setCar(carSchema);
 
                 callback(null, responseGRPC);

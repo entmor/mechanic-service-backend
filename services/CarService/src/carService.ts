@@ -1,6 +1,8 @@
 import * as grpc from '@grpc/grpc-js';
 import { CarService } from '../../../grpc/Car/Car_grpc_pb';
 import { MongoDb } from '../../../middleware/Mongodb';
+import { getCar } from './services/getCar';
+import { deleteCar } from './services/deleteCar';
 
 const mongodb = new MongoDb('cv', 'cars');
 
@@ -9,7 +11,10 @@ mongodb
     .then((db) => {
         const server = new grpc.Server();
 
-        server.addService(CarService, {});
+        server.addService(CarService, {
+            getCar: getCar(db),
+            deleteCar: deleteCar(db),
+        });
 
         //TODO SSL
         server.bindAsync(
