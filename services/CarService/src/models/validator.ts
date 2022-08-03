@@ -1,16 +1,19 @@
 import Joi from 'joi';
 import { Car } from '../../../../interface/car';
 import { JoiSchema } from '../../../../interface/joi';
+import { RegExpPatterns } from '../../../../helpers/validate';
 
 type CarSchema = Omit<Car, 'id'>;
 
+const dateYear = new Date().getFullYear();
+
 const CAR_SCHEMA: JoiSchema<CarSchema> = {
-    plate: Joi.string(),
-    mark: Joi.string(),
-    model: Joi.string(),
-    vin: Joi.string(),
-    year: Joi.number().min(1860).max(2022),
-    client_id: Joi.string(),
+    plate: Joi.string().pattern(RegExpPatterns.plate),
+    mark: Joi.string().pattern(RegExpPatterns.name),
+    model: Joi.string().pattern(RegExpPatterns.name),
+    vin: Joi.string().pattern(RegExpPatterns.vin),
+    year: Joi.number().min(1886).max(dateYear),
+    client_id: Joi.string().pattern(RegExpPatterns.mongoId),
 };
 
 const setCarSchema: JoiSchema<CarSchema> = {

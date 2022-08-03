@@ -1,10 +1,13 @@
 import * as grpc from '@grpc/grpc-js';
 import { CarService } from '../../../grpc/Car/Car_grpc_pb';
 import { MongoDb } from '../../../middleware/Mongodb';
+import { Car } from '../../../interface/car';
 import { getCar } from './services/getCar';
+import { setCar } from './services/setCar';
+import { updateCar } from './services/updateCar';
 import { deleteCar } from './services/deleteCar';
 
-const mongodb = new MongoDb('cv', 'cars');
+const mongodb = new MongoDb<Car>('cv', 'cars');
 
 mongodb
     .connection()
@@ -13,6 +16,8 @@ mongodb
 
         server.addService(CarService, {
             getCar: getCar(db),
+            setCar: setCar(db),
+            updateCar: updateCar(db),
             deleteCar: deleteCar(db),
         });
 

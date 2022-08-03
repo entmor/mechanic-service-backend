@@ -26,6 +26,28 @@ function deserialize_Car_DeleteCarResponse(buffer_arg) {
   return Car_Car_pb.DeleteCarResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_Car_GetAllCarsRequest(arg) {
+  if (!(arg instanceof Car_Car_pb.GetAllCarsRequest)) {
+    throw new Error('Expected argument of type Car.GetAllCarsRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_Car_GetAllCarsRequest(buffer_arg) {
+  return Car_Car_pb.GetAllCarsRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_Car_GetAllCarsResponse(arg) {
+  if (!(arg instanceof Car_Car_pb.GetAllCarsResponse)) {
+    throw new Error('Expected argument of type Car.GetAllCarsResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_Car_GetAllCarsResponse(buffer_arg) {
+  return Car_Car_pb.GetAllCarsResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_Car_GetCarRequest(arg) {
   if (!(arg instanceof Car_Car_pb.GetCarRequest)) {
     throw new Error('Expected argument of type Car.GetCarRequest');
@@ -138,6 +160,17 @@ getCar: {
     requestDeserialize: deserialize_Car_DeleteCarRequest,
     responseSerialize: serialize_Car_DeleteCarResponse,
     responseDeserialize: deserialize_Car_DeleteCarResponse,
+  },
+  getAllCars: {
+    path: '/Car.Car/GetAllCars',
+    requestStream: false,
+    responseStream: false,
+    requestType: Car_Car_pb.GetAllCarsRequest,
+    responseType: Car_Car_pb.GetAllCarsResponse,
+    requestSerialize: serialize_Car_GetAllCarsRequest,
+    requestDeserialize: deserialize_Car_GetAllCarsRequest,
+    responseSerialize: serialize_Car_GetAllCarsResponse,
+    responseDeserialize: deserialize_Car_GetAllCarsResponse,
   },
 };
 

@@ -1,7 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
-import { CarSchema, SetCarRequest, SetCarResponse } from '../../../../grpc/Car/Car_pb';
+import { SetCarRequest, SetCarResponse } from '../../../../grpc/Car/Car_pb';
 import { MongoDb } from '../../../../middleware/Mongodb';
-import { fromJsonToGrpc } from '../../../../helpers/grpc';
 import { Car } from '../../../../interface/car';
 import { JoiValidator } from '../../../../helpers/validate';
 import { SetCarValidator } from '../models/validator';
@@ -11,7 +10,7 @@ type Callback = grpc.sendUnaryData<SetCarResponse>;
 
 type CarValidated = Omit<Car, 'id' | 'updateAt' | 'createAt'>;
 
-export const setCar = (mongodb: MongoDb) => {
+export const setCar = (mongodb: MongoDb<Car>) => {
     return async ({ request }: Call, callback: Callback): Promise<void> => {
         try {
             /**
@@ -27,29 +26,19 @@ export const setCar = (mongodb: MongoDb) => {
                 }
             );
 
-            await mongodb.collection.insertOne({
+            const insertResponse = await mongodb.collection.insertOne({
                 ...carValidated,
-            })
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+            });
 
-            if (carObject === null) {
-                /** SEND RESPONSE_ERROR [GET_CAR] **/
-                callback({
-                    code: grpc.status.NOT_FOUND,
-                    message: "Object isn't exist.",
-                });
-            } else {
-                /** SUCCESS RESPONSE GRPC [GET_CAR]  */
-                const carSchema = fromJsonToGrpc<CarSchema, Car>(new CarSchema(), carObject, {
-                    getTimeChange: true,
-                });
+            /** SUCCESS RESPONSE GRPC [SET_CAR]  */
+            const responseGRPC = new SetCarResponse();
+            responseGRPC.setId(+insertResponse.insertedId);
 
-                const responseGRPC = new SetCarResponse();
-                responseGRPC.setCar(carSchema);
-
-                callback(null, responseGRPC);
-            }
+            callback(null, responseGRPC);
         } catch (e) {
-            /** SEND RESPONSE_ERROR [GET_CAR] **/
+            /** SEND RESPONSE_ERROR [SET_CAR] **/
             callback({
                 code: e.code || grpc.status.INTERNAL,
                 message: e.message || 'SERVER ERROR',

@@ -51,3 +51,18 @@ export const JoiValidator = async <T, TReturn>(
     // RESOLVE PROMISE
     return value;
 };
+
+interface Patterns {
+    [key: string]: RegExp;
+}
+
+export const RegExpPatterns: Patterns = {
+    mongoId: new RegExp(/^[a-fA-F0-9]{24}$/),
+    plate: new RegExp(/^[\p{L}\p{N}]*$/iu),
+    name: new RegExp(/^[- \p{L}\p{N}]*$/iu),
+    vin: new RegExp(/^[0-9wertyupasdfghjklzxxcvbnmWERTYUPASDFGHJKLZXCVBNM]{17}$/iu),
+    phone: new RegExp(/^[0-9 ()+\-\p{N}]*$/iu),
+    gender: new RegExp(/^(GENDER_FEMALE|GENDER_MALE|GENDER_DIVERS)$/i),
+    birthday: new RegExp(/^[0-9]{2}-[0-9]{2}-[0-9]{4}$/i),
+    yearPattern: new RegExp(/^\d{4}$/i)
+};
