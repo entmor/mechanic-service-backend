@@ -294,7 +294,7 @@ proto.Car.CarSchema.toObject = function(includeInstance, msg) {
     mark: jspb.Message.getFieldWithDefault(msg, 3, ""),
     model: jspb.Message.getFieldWithDefault(msg, 4, ""),
     vin: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    year: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    year: jspb.Message.getFieldWithDefault(msg, 6, 0),
     clientId: jspb.Message.getFieldWithDefault(msg, 7, ""),
     createdAt: jspb.Message.getFieldWithDefault(msg, 8, 0),
     updatedAt: jspb.Message.getFieldWithDefault(msg, 9, 0)
@@ -355,7 +355,7 @@ proto.Car.CarSchema.deserializeBinaryFromReader = function(msg, reader) {
       msg.setVin(value);
       break;
     case 6:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {number} */ (reader.readInt32());
       msg.setYear(value);
       break;
     case 7:
@@ -435,8 +435,8 @@ proto.Car.CarSchema.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getYear();
-  if (f.length > 0) {
-    writer.writeString(
+  if (f !== 0) {
+    writer.writeInt32(
       6,
       f
     );
@@ -556,20 +556,20 @@ proto.Car.CarSchema.prototype.setVin = function(value) {
 
 
 /**
- * optional string year = 6;
- * @return {string}
+ * optional int32 year = 6;
+ * @return {number}
  */
 proto.Car.CarSchema.prototype.getYear = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
 };
 
 
 /**
- * @param {string} value
+ * @param {number} value
  * @return {!proto.Car.CarSchema} returns this
  */
 proto.Car.CarSchema.prototype.setYear = function(value) {
-  return jspb.Message.setProto3StringField(this, 6, value);
+  return jspb.Message.setProto3IntField(this, 6, value);
 };
 
 
@@ -659,7 +659,7 @@ proto.Car.GetCarRequest.prototype.toObject = function(opt_includeInstance) {
  */
 proto.Car.GetCarRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    id: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -697,7 +697,7 @@ proto.Car.GetCarRequest.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {string} */ (reader.readString());
       msg.setId(value);
       break;
     default:
@@ -730,8 +730,8 @@ proto.Car.GetCarRequest.prototype.serializeBinary = function() {
 proto.Car.GetCarRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getId();
-  if (f !== 0) {
-    writer.writeInt32(
+  if (f.length > 0) {
+    writer.writeString(
       1,
       f
     );
@@ -740,20 +740,20 @@ proto.Car.GetCarRequest.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional int32 id = 1;
- * @return {number}
+ * optional string id = 1;
+ * @return {string}
  */
 proto.Car.GetCarRequest.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * @param {number} value
+ * @param {string} value
  * @return {!proto.Car.GetCarRequest} returns this
  */
 proto.Car.GetCarRequest.prototype.setId = function(value) {
-  return jspb.Message.setProto3IntField(this, 1, value);
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1091,7 +1091,7 @@ proto.Car.SetCarResponse.prototype.toObject = function(opt_includeInstance) {
  */
 proto.Car.SetCarResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    id: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -1129,7 +1129,7 @@ proto.Car.SetCarResponse.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {string} */ (reader.readString());
       msg.setId(value);
       break;
     default:
@@ -1162,8 +1162,8 @@ proto.Car.SetCarResponse.prototype.serializeBinary = function() {
 proto.Car.SetCarResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getId();
-  if (f !== 0) {
-    writer.writeInt32(
+  if (f.length > 0) {
+    writer.writeString(
       1,
       f
     );
@@ -1172,20 +1172,20 @@ proto.Car.SetCarResponse.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional int32 id = 1;
- * @return {number}
+ * optional string id = 1;
+ * @return {string}
  */
 proto.Car.SetCarResponse.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * @param {number} value
+ * @param {string} value
  * @return {!proto.Car.SetCarResponse} returns this
  */
 proto.Car.SetCarResponse.prototype.setId = function(value) {
-  return jspb.Message.setProto3IntField(this, 1, value);
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1502,7 +1502,7 @@ proto.Car.DeleteCarRequest.prototype.toObject = function(opt_includeInstance) {
  */
 proto.Car.DeleteCarRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    id: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -1540,7 +1540,7 @@ proto.Car.DeleteCarRequest.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {string} */ (reader.readString());
       msg.setId(value);
       break;
     default:
@@ -1573,8 +1573,8 @@ proto.Car.DeleteCarRequest.prototype.serializeBinary = function() {
 proto.Car.DeleteCarRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getId();
-  if (f !== 0) {
-    writer.writeInt32(
+  if (f.length > 0) {
+    writer.writeString(
       1,
       f
     );
@@ -1583,20 +1583,20 @@ proto.Car.DeleteCarRequest.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional int32 id = 1;
- * @return {number}
+ * optional string id = 1;
+ * @return {string}
  */
 proto.Car.DeleteCarRequest.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * @param {number} value
+ * @param {string} value
  * @return {!proto.Car.DeleteCarRequest} returns this
  */
 proto.Car.DeleteCarRequest.prototype.setId = function(value) {
-  return jspb.Message.setProto3IntField(this, 1, value);
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 

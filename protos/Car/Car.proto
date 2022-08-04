@@ -8,14 +8,14 @@ message CarSchema{
   string mark = 3;
   string model = 4;
   string vin = 5;
-  string year = 6;
+  int32 year = 6;
   string client_id = 7;
   int64 created_at = 8;
   int64 updated_at = 9;
 }
 
 message GetCarRequest{
-  int32 id = 1;
+  string id = 1;
 }
 
 message GetCarResponse{
@@ -27,7 +27,7 @@ message SetCarRequest{
 }
 
 message SetCarResponse{
-  int32 id = 1;
+  string id = 1;
 }
 
 message UpdateCarRequest{
@@ -39,7 +39,7 @@ message UpdateCarResponse{
 }
 
 message DeleteCarRequest{
-  int32 id = 1;
+  string id = 1;
 }
 
 message DeleteCarResponse{

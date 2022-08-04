@@ -13,7 +13,7 @@ const CAR_SCHEMA: JoiSchema<CarSchema> = {
     model: Joi.string().pattern(RegExpPatterns.name),
     vin: Joi.string().pattern(RegExpPatterns.vin),
     year: Joi.number().min(1886).max(dateYear),
-    client_id: Joi.string().pattern(RegExpPatterns.mongoId),
+    clientId: Joi.string().pattern(RegExpPatterns.mongoId),
 };
 
 const setCarSchema: JoiSchema<CarSchema> = {
@@ -23,7 +23,7 @@ const setCarSchema: JoiSchema<CarSchema> = {
     model: CAR_SCHEMA.model.required(),
     vin: CAR_SCHEMA.vin.required(),
     year: CAR_SCHEMA.year.required(),
-    client_id: CAR_SCHEMA.client_id.required(),
+    clientId: CAR_SCHEMA.clientId.required(),
 };
 
 const updatedCarSchema: JoiSchema<Car> = {

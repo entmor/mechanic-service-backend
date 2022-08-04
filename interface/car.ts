@@ -5,7 +5,7 @@ export interface Car {
     model: string;
     vin: string;
     year: number;
-    client_id: string;
+    clientId: string;
     createdAt?: number;
     updatedAt?: number;
 }

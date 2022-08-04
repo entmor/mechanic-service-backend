@@ -1,6 +1,6 @@
-import { Collection, Db, MongoClient } from 'mongodb';
+import { Collection, Db, FindOptions, MongoClient } from 'mongodb';
 import { status } from '@grpc/grpc-js';
-import { response } from 'express';
+import { boolean } from 'joi';
 
 export class MongoDb<TCollection> {
     private client: MongoClient;
@@ -77,4 +77,69 @@ export const isUpdated = async (
         code: errorCode || status.NOT_FOUND,
         message: errorMessage || "Object isn't exist.",
     });
+};
+
+interface GetAllOptions {
+    page?: number;
+    per_page?: number;
+    sort?: string;
+    orderby?: string;
+}
+
+export const isNextPage = (per_page: number, page: number, count: number): boolean => {
+    return per_page * page < count ? true : false;
+};
+
+/**
+ *
+ * prepareFindOptions
+ *
+ **/
+
+const DEFAULT_PER_PAGE = 10;
+const DEFAULT_SORT_DIRECTION = ['ASC', 'DESC'];
+
+type PrepareFindOptions = {
+    query: GetAllOptions;
+    findOptions: FindOptions;
+};
+
+export const prepareFindOptions = (options: GetAllOptions): PrepareFindOptions => {
+    /** SET SORT FOR QUERY **/
+    const SORT_DIRECTION =
+        typeof options.sort === 'string' &&
+        DEFAULT_SORT_DIRECTION.indexOf(options.sort.trim().toUpperCase()) >= 0
+            ? options.sort.trim().toUpperCase()
+            : DEFAULT_SORT_DIRECTION[0];
+
+    const ORDERBY =
+        typeof options.orderby === 'string' && options.orderby !== undefined
+            ? options.orderby
+            : 'createdAt';
+
+    /** SET PAGE FOR QUERY **/
+    const PAGE = typeof options.page === 'number' && options.page > 0 ? options.page : 1;
+
+    /** SET PER_PAGE FOR QUERY **/
+    const PER_PAGE =
+        typeof options.per_page === 'number' && options.per_page > 0
+            ? options.per_page
+            : DEFAULT_PER_PAGE;
+
+    /** SET OFFSET FOR QUERY **/
+    const OFFSET = PAGE === 1 || PAGE === 0 ? 0 : PER_PAGE * (PAGE - 1);
+
+    return {
+        query: {
+            sort: SORT_DIRECTION,
+            page: PAGE,
+            orderby: ORDERBY,
+            per_page: PER_PAGE,
+        },
+        findOptions: {
+            limit: PER_PAGE,
+            skip: OFFSET,
+            sort: [ORDERBY, SORT_DIRECTION],
+        },
+    };
 };

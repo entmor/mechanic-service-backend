@@ -19,8 +19,8 @@ export class CarSchema extends jspb.Message {
   getVin(): string;
   setVin(value: string): void;
 
-  getYear(): string;
-  setYear(value: string): void;
+  getYear(): number;
+  setYear(value: number): void;
 
   getClientId(): string;
   setClientId(value: string): void;
@@ -48,7 +48,7 @@ export namespace CarSchema {
     mark: string,
     model: string,
     vin: string,
-    year: string,
+    year: number,
     clientId: string,
     createdAt: number,
     updatedAt: number,
@@ -56,8 +56,8 @@ export namespace CarSchema {
 }
 
 export class GetCarRequest extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetCarRequest.AsObject;
@@ -71,7 +71,7 @@ export class GetCarRequest extends jspb.Message {
 
 export namespace GetCarRequest {
   export type AsObject = {
-    id: number,
+    id: string,
   }
 }
 
@@ -120,8 +120,8 @@ export namespace SetCarRequest {
 }
 
 export class SetCarResponse extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SetCarResponse.AsObject;
@@ -135,7 +135,7 @@ export class SetCarResponse extends jspb.Message {
 
 export namespace SetCarResponse {
   export type AsObject = {
-    id: number,
+    id: string,
   }
 }
 
@@ -182,8 +182,8 @@ export namespace UpdateCarResponse {
 }
 
 export class DeleteCarRequest extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): DeleteCarRequest.AsObject;
@@ -197,7 +197,7 @@ export class DeleteCarRequest extends jspb.Message {
 
 export namespace DeleteCarRequest {
   export type AsObject = {
-    id: number,
+    id: string,
   }
 }
 
