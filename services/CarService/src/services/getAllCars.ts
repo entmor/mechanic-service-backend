@@ -3,12 +3,11 @@ import { CarSchema, GetAllCarsRequest, GetAllCarsResponse } from '../../../../gr
 import { isNextPage, MongoDb, prepareFindOptions } from '../../../../middleware/Mongodb';
 import { fromJsonToGrpc } from '../../../../helpers/grpc';
 import { Car } from '../../../../interface/car';
-import { response } from 'express';
 
 type Call = grpc.ServerUnaryCall<GetAllCarsRequest, GetAllCarsResponse>;
 type Callback = grpc.sendUnaryData<GetAllCarsResponse>;
 
-export const getAllCar = (mongodb: MongoDb<Car>) => {
+export const getAllCars = (mongodb: MongoDb<Car>) => {
     return async ({ request }: Call, callback: Callback): Promise<void> => {
         try {
             /**

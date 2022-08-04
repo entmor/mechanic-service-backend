@@ -10,8 +10,8 @@ import { authenticator } from '../middleware/authenticator';
 
 import getCar from './cars/getCar';
 import deleteCar from './cars/deleteCar';
-import setCar from "./cars/setCar";
-import updateCar from "./cars/updateCar";
+import setCar from './cars/setCar';
+import updateCar from './cars/updateCar';
 
 const authUserType = (req: Request, res: Response, next: NextFunction) => {
     res.locals.type = 'user';

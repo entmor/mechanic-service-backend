@@ -6,6 +6,7 @@ import { getCar } from './services/getCar';
 import { setCar } from './services/setCar';
 import { updateCar } from './services/updateCar';
 import { deleteCar } from './services/deleteCar';
+import { getAllCars } from './services/getAllCars';
 
 const mongodb = new MongoDb<Car>('cv', 'cars');
 
@@ -19,6 +20,7 @@ mongodb
             setCar: setCar(db),
             updateCar: updateCar(db),
             deleteCar: deleteCar(db),
+            getAllCars: getAllCars(db),
         });
 
         //TODO SSL

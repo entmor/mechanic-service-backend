@@ -34,7 +34,7 @@ export const setCar = (mongodb: MongoDb<Car>) => {
 
             /** SUCCESS RESPONSE GRPC [SET_CAR]  */
             const responseGRPC = new SetCarResponse();
-            responseGRPC.setId(+insertResponse.insertedId);
+            responseGRPC.setId(insertResponse.insertedId.toString());
 
             callback(null, responseGRPC);
         } catch (e) {
