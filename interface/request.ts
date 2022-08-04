@@ -11,4 +11,6 @@ export interface GetAllRequest {
     page: number;
     per_page: number;
     sort: 'ASC' | 'DESC';
+    orderBy: string;
+    where?: string;
 }
