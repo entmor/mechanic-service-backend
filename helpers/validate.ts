@@ -1,5 +1,4 @@
 import { status } from '@grpc/grpc-js';
-
 import Joi from 'joi';
 import { removeEmptyProperties } from './object';
 
