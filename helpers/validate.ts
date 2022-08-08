@@ -1,4 +1,4 @@
-import { Status } from '@grpc/grpc-js/src/constants';
+import { status } from '@grpc/grpc-js';
 
 import Joi from 'joi';
 import { removeEmptyProperties } from './object';
@@ -43,7 +43,7 @@ export const JoiValidator = async <T, TReturn>(
 
     if (error) {
         await Promise.reject({
-            code: Status.INVALID_ARGUMENT,
+            code: status.INVALID_ARGUMENT,
             message: error.message,
         });
     }
