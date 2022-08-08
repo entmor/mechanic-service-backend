@@ -1,6 +1,6 @@
 import { Collection, Db, FindOptions, MongoClient } from 'mongodb';
-import { status } from '@grpc/grpc-js';
-import { boolean } from 'joi';
+import * as grpc from '@grpc/grpc-js';
+import { JoiSchema } from '../interface/joi';
 
 export class MongoDb<TCollection> {
     private client: MongoClient;
@@ -35,14 +35,14 @@ export class MongoDb<TCollection> {
 export const isFound = async <T>(
     object: T | null,
     errorMessage?: string,
-    errorCode?: status
+    errorCode?: number
 ): Promise<T> => {
     if (object !== null) {
         return object;
     }
 
     Promise.reject({
-        code: errorCode || status.NOT_FOUND,
+        code: errorCode || grpc.status.NOT_FOUND,
         message: errorMessage || "Object isn't exist.",
     });
 };
@@ -50,14 +50,14 @@ export const isFound = async <T>(
 export const isDeleted = async (
     response: { ok: 0 | 1 },
     errorMessage?: string,
-    errorCode?: status
+    errorCode?: number
 ): Promise<boolean> => {
     if (response.ok === 1) {
         return true;
     }
 
     Promise.reject({
-        code: errorCode || status.NOT_FOUND,
+        code: errorCode || grpc.status.NOT_FOUND,
         message: errorMessage || "Object isn't exist.",
     });
 };
@@ -67,14 +67,14 @@ export const isUpdated = async (
         matchedCount: number;
     },
     errorMessage?: string,
-    errorCode?: status
+    errorCode?: number
 ): Promise<boolean> => {
     if (response.matchedCount > 0) {
         return true;
     }
 
     Promise.reject({
-        code: errorCode || status.NOT_FOUND,
+        code: errorCode || grpc.status.NOT_FOUND,
         message: errorMessage || "Object isn't exist.",
     });
 };
@@ -142,4 +142,58 @@ export const prepareFindOptions = (options: GetAllOptions): PrepareFindOptions =
             sort: [ORDERBY, SORT_DIRECTION],
         },
     };
+};
+
+export const prepareFindFilter = async <T>(validators: JoiSchema<T> | any, filter: Partial<T>) => {
+    const preparedFilter: {
+        [key: string]: any;
+    } = {};
+
+    try {
+        // if( typeof filter === null && typeof filter )
+        for (const [key, value] of Object.entries(filter)) {
+            if (Object.hasOwn(validators, key)) {
+                if (
+                    typeof value !== null &&
+                    typeof value !== undefined &&
+                    typeof value !== 'object'
+                ) {
+                    const { error, valid } = validators[key].validate(value);
+
+                    if (error) return await Promise.reject(onErrorPreparedFindFilter());
+
+                    preparedFilter[key] = valid;
+                }
+
+                if (typeof value === 'object') {
+                    if (Object.hasOwn(value, '$gt')) {
+                        preparedFilter[key]['$gt'] = await objectHandler(
+                            validators[key],
+                            value,
+                            '$gt'
+                        );
+                    }
+                }
+            }
+        }
+
+        return preparedFilter;
+    } catch (e) {
+        return await Promise.reject(onErrorPreparedFindFilter());
+    }
+};
+
+const objectHandler = async (validator: any, object: any, key: string) => {
+    const { error, valid } = validator.validate(object[key]);
+
+    if (error) return await Promise.reject(onErrorPreparedFindFilter());
+
+    return valid;
+};
+
+const onErrorPreparedFindFilter = () => {
+    return Promise.reject({
+        code: 3,
+        message: 'fdf',
+    });
 };

@@ -5,15 +5,18 @@ import { RegExpPatterns } from '../../../../helpers/validate';
 
 type CarSchema = Omit<Car, 'id'>;
 
-const dateYear = new Date().getFullYear();
-
 const CAR_SCHEMA: JoiSchema<CarSchema> = {
     plate: Joi.string().pattern(RegExpPatterns.plate),
     mark: Joi.string().pattern(RegExpPatterns.name),
     model: Joi.string().pattern(RegExpPatterns.name),
     vin: Joi.string().pattern(RegExpPatterns.vin),
-    year: Joi.number().min(1886).max(dateYear),
+    year: Joi.number().min(1886),
     clientId: Joi.string().pattern(RegExpPatterns.mongoId),
+};
+
+const findFilterSchema: JoiSchema<Car> = {
+    ...CAR_SCHEMA,
+    id: Joi.string().pattern(RegExpPatterns.mongoId),
 };
 
 const setCarSchema: JoiSchema<CarSchema> = {
@@ -28,9 +31,28 @@ const setCarSchema: JoiSchema<CarSchema> = {
 
 const updatedCarSchema: JoiSchema<Car> = {
     ...CAR_SCHEMA,
-    id: Joi.string().required(),
+    id: Joi.string().pattern(RegExpPatterns.mongoId).required(),
 };
 
-export const SetCarValidator = Joi.object(setCarSchema);
+/** EXPORTS VALIDATORS **/
 
-export const UpdateCarValidator = Joi.object(updatedCarSchema);
+export const FindFilterValidator = (): JoiSchema<Car> => {
+    const dateYear = new Date().getFullYear();
+    findFilterSchema.year.max(dateYear);
+
+    return findFilterSchema;
+};
+
+export const SetCarValidator = (): Joi.ObjectSchema<CarSchema> => {
+    const dateYear = new Date().getFullYear();
+    setCarSchema.year.max(dateYear);
+
+    return Joi.object(setCarSchema);
+};
+
+export const UpdateCarValidator = (): Joi.ObjectSchema<Car> => {
+    const dateYear = new Date().getFullYear();
+    updatedCarSchema.year.max(dateYear);
+
+    return Joi.object(updatedCarSchema);
+};
