@@ -17,7 +17,7 @@ export const updateCar = (mongodb: MongoDb<Car>) => {
             /** GET CAR FROM GRPC && VALIDATE */
             const carObjectFromGRPC = request.getCar().toObject();
             const carValidated = await JoiValidator<CarValidated, CarValidated>(
-                UpdateCarValidator,
+                UpdateCarValidator(),
                 carObjectFromGRPC,
                 {
                     removeId: false,
