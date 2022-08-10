@@ -1,6 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import { DeleteCarRequest, DeleteCarResponse } from '../../../../grpc/Car/Car_pb';
-import { isDeleted, MongoDb } from '../../../../middleware/Mongodb';
+import { isDeleted, MongoDb } from '../../../../middleware/Mongodb/mongodb';
 import { ObjectId } from 'mongodb';
 import { Car } from '../../../../interface/car';
 

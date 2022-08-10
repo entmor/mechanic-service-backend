@@ -4,7 +4,7 @@ import { GenderClient, GenderGrpc } from '../../../../../interface/gender';
 import { User } from '../../../../../interface/user';
 import { grpcUserClient } from '../../grpcClients';
 import { GetUserRequest } from '../../../../../grpc/User/User_pb';
-import { Gender } from '../../../../../grpc/Instructor/Instructor_pb';
+import { Gender } from '../../../../../grpc/Schema/UserSchema_pb';
 
 interface ParamsRequest {
     id: number;

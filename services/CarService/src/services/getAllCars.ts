@@ -1,8 +1,14 @@
 import * as grpc from '@grpc/grpc-js';
 import { CarSchema, GetAllCarsRequest, GetAllCarsResponse } from '../../../../grpc/Car/Car_pb';
-import { isNextPage, MongoDb, prepareFindOptions } from '../../../../middleware/Mongodb';
+import {
+    isNextPage,
+    MongoDb,
+    prepareFindFilter,
+    prepareFindOptions,
+} from '../../../../middleware/Mongodb/mongodb';
 import { fromJsonToGrpc } from '../../../../helpers/grpc';
 import { Car } from '../../../../interface/car';
+import { FindFilterValidator } from '../models/validator';
 
 type Call = grpc.ServerUnaryCall<GetAllCarsRequest, GetAllCarsResponse>;
 type Callback = grpc.sendUnaryData<GetAllCarsResponse>;
@@ -10,12 +16,10 @@ type Callback = grpc.sendUnaryData<GetAllCarsResponse>;
 export const getAllCars = (mongodb: MongoDb<Car>) => {
     return async ({ request }: Call, callback: Callback): Promise<void> => {
         try {
-            /**
-             * PREPARE DATA FROM GRPC
-             * GET ALL CARS FROM DATABASE
-             **/
+            /**  PREPARE DATA FROM GRPC **/
 
             const where = request.hasWhere() ? JSON.parse(request.getWhere()) : {};
+            const preparedWhere = prepareFindFilter<Car>(FindFilterValidator(), where);
 
             const _prepareFindOptions = prepareFindOptions({
                 per_page: +request.getPerPage(),
@@ -24,9 +28,10 @@ export const getAllCars = (mongodb: MongoDb<Car>) => {
                 orderby: request.getOrderby(),
             });
 
-            const countCarsQuery = mongodb.collection.countDocuments(where);
+            /** GET ALL CARS FROM DATABASE **/
+            const countCarsQuery = mongodb.collection.countDocuments(preparedWhere);
             const getCarsQuery = mongodb.collection
-                .find(where, _prepareFindOptions.findOptions)
+                .find(preparedWhere, _prepareFindOptions.findOptions)
                 .toArray();
 
             const [countCars, carsArray] = await Promise.all([countCarsQuery, getCarsQuery]);

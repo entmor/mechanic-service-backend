@@ -42,7 +42,7 @@ beforeAll(async () => {
     });
 });
 
-describe('User tests', () => {
+describe.skip('User tests', () => {
     const app = request(App);
     let invalidUser: Partial<User<GenderClient>> = {};
 

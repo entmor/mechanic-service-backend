@@ -1,6 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import { SetCarRequest, SetCarResponse } from '../../../../grpc/Car/Car_pb';
-import { MongoDb } from '../../../../middleware/Mongodb';
+import { MongoDb } from '../../../../middleware/Mongodb/mongodb';
 import { Car } from '../../../../interface/car';
 import { JoiValidator } from '../../../../helpers/validate';
 import { SetCarValidator } from '../models/validator';

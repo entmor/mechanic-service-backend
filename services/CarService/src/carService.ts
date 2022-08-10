@@ -1,6 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import { CarService } from '../../../grpc/Car/Car_grpc_pb';
-import { MongoDb } from '../../../middleware/Mongodb';
+import { MongoDb } from '../../../middleware/Mongodb/mongodb';
 import { Car } from '../../../interface/car';
 import { getCar } from './services/getCar';
 import { setCar } from './services/setCar';

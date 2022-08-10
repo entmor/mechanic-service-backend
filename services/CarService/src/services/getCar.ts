@@ -1,6 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import { CarSchema, GetCarRequest, GetCarResponse } from '../../../../grpc/Car/Car_pb';
-import { isFound, MongoDb } from '../../../../middleware/Mongodb';
+import { isFound, MongoDb } from '../../../../middleware/Mongodb/mongodb';
 import { fromJsonToGrpc } from '../../../../helpers/grpc';
 import { Car } from '../../../../interface/car';
 import { ObjectId } from 'mongodb';

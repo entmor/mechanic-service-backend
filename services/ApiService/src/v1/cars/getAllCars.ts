@@ -5,7 +5,7 @@ import { ApiResponse, errorsHandler } from '../../errors';
 import { GetAllCarsRequest } from '../../../../../grpc/Car/Car_pb';
 import { grpcCarClient } from '../../grpcClients';
 
-type RequestApi = Request<any, any, any, GetAllRequest>;
+type RequestApi = Request<unknown, unknown, unknown, GetAllRequest>;
 type ResponseApi = Response<GetAllResponse<Car> | ApiResponse>;
 
 export default function ({ query }: RequestApi, responseApi: ResponseApi): void {

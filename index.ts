@@ -1,4 +1,4 @@
-import { prepareFindFilter } from './middleware/Mongodb';
+import { prepareFindFilter } from './middleware/Mongodb/mongodb';
 import { FindFilterValidator } from './services/CarService/src/models/validator';
 import { Car } from './interface/car';
 
