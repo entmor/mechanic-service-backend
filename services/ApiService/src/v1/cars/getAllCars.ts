@@ -1,4 +1,4 @@
-import { Response, Request } from 'express';
+import { Response, Request, NextFunction } from 'express';
 import { GetAllRequest, GetAllResponse } from '../../../../../interface/request';
 import { Car } from '../../../../../interface/car';
 import { ApiResponse, errorsHandler } from '../../errors';
@@ -8,16 +8,16 @@ import { grpcCarClient } from '../../grpcClients';
 type RequestApi = Request<unknown, unknown, unknown, GetAllRequest>;
 type ResponseApi = Response<GetAllResponse<Car> | ApiResponse>;
 
-export default function ({ query }: RequestApi, responseApi: ResponseApi): void {
+export default function ({ query }: RequestApi, responseApi: ResponseApi, next: NextFunction): void {
     try {
         /** SET PARAMS FROM CALL **/
         const requestGRPC = new GetAllCarsRequest();
 
-        requestGRPC.setPage(+query.page);
-        requestGRPC.setPerPage(+query.per_page);
-        requestGRPC.setOrderby(query.orderBy);
-        requestGRPC.setSort(query.sort);
-        requestGRPC.setWhere(JSON.stringify(query.where));
+        requestGRPC.setPage(+query.page || +'');
+        requestGRPC.setPerPage(+query.per_page || +'');
+        requestGRPC.setOrderby(query.orderBy || '');
+        requestGRPC.setSort(query.sort || '');
+        requestGRPC.setWhere(JSON.stringify(query.where || {}));
 
         /** MAKE GRPC_REQUEST [GET_ALL_CARS] **/
         grpcCarClient.getAllCars(requestGRPC, (error, grpcResponse): void => {

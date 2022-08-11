@@ -11,7 +11,7 @@ export class MongoDb<TCollection> {
 
     private dbName: string;
     private collectionName: string;
-    private url_mongo = 'mongodb://root:example@localhost:27018';
+    private url_mongo = 'mongodb://root:example@mongo:27017';
 
     constructor(dbName?: string, collection?: string) {
         this.dbName = dbName || process.env.MONGO_DB;
@@ -23,6 +23,7 @@ export class MongoDb<TCollection> {
 
         try {
             await this.client.connect();
+            console.log('mongo connecton');
         } catch (e) {
             console.log(e);
         }

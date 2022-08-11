@@ -21,7 +21,7 @@ export const getAllCars = (mongodb: MongoDb<Car>) => {
             const where = request.hasWhere() ? JSON.parse(request.getWhere()) : {};
             const preparedWhere = prepareFindFilter<Car>(FindFilterValidator(), where);
 
-            const _prepareFindOptions = prepareFindOptions({
+            const preparedFindOptions = prepareFindOptions({
                 per_page: +request.getPerPage(),
                 page: +request.getPage(),
                 sort: request.getSort(),
@@ -31,13 +31,13 @@ export const getAllCars = (mongodb: MongoDb<Car>) => {
             /** GET ALL CARS FROM DATABASE **/
             const countCarsQuery = mongodb.collection.countDocuments(preparedWhere);
             const getCarsQuery = mongodb.collection
-                .find(preparedWhere, _prepareFindOptions.findOptions)
+                .find(preparedWhere, preparedFindOptions.findOptions)
                 .toArray();
 
             const [countCars, carsArray] = await Promise.all([countCarsQuery, getCarsQuery]);
             const _isNextPage = isNextPage(
-                _prepareFindOptions.findOptions.limit,
-                _prepareFindOptions.query.page,
+                preparedFindOptions.findOptions.limit,
+                preparedFindOptions.query.page,
                 +countCars
             );
 
@@ -45,12 +45,15 @@ export const getAllCars = (mongodb: MongoDb<Car>) => {
             const responseGRPC = new GetAllCarsResponse();
 
             responseGRPC.setCount(+countCars);
-            responseGRPC.setPage(+_prepareFindOptions.query.page);
-            responseGRPC.setPerPage(+_prepareFindOptions.findOptions.limit);
-            responseGRPC.setSort(_prepareFindOptions.query.sort);
+            responseGRPC.setPage(+preparedFindOptions.query.page);
+            responseGRPC.setPerPage(+preparedFindOptions.findOptions.limit);
+            responseGRPC.setSort(preparedFindOptions.query.sort);
             responseGRPC.setIsNextPage(_isNextPage);
 
-            carsArray.forEach((car: Car): void => {
+            carsArray.forEach((car): void => {
+                if ('_id' in car) {
+                    car.id = car._id.toString();
+                }
                 responseGRPC.addCars(fromJsonToGrpc<CarSchema, Car>(new CarSchema(), car));
             });
 

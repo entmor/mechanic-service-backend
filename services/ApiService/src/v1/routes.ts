@@ -12,6 +12,7 @@ import getCar from './cars/getCar';
 import deleteCar from './cars/deleteCar';
 import setCar from './cars/setCar';
 import updateCar from './cars/updateCar';
+import getAllCars from './cars/getAllCars';
 
 const authUserType = (req: Request, res: Response, next: NextFunction) => {
     res.locals.type = 'user';
@@ -27,6 +28,8 @@ routes.get('/user/:id', [authUserType, authenticator, getUser]);
 
 routes.post('/user/auth', [authUserType, getAuth]);
 
+routes.get('/car/all', getAllCars);
+routes.get('/car', getAllCars);
 routes.get('/car/:id', [getCar]);
 routes.post('/car', [setCar]);
 routes.put('/car', [updateCar]);

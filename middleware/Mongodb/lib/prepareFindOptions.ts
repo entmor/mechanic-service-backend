@@ -1,25 +1,20 @@
 import { FindOptions } from 'mongodb';
 
-/**
- *
- * prepareFindOptions
- *
- **/
-
-interface GetAllOptions {
+export interface GetAllOptions {
     page?: number;
     per_page?: number;
-    sort?: string;
+    sort?: 'ASC' | 'DESC' | string;
     orderby?: string;
 }
 
-const DEFAULT_PER_PAGE = 10;
-const DEFAULT_SORT_DIRECTION = ['ASC', 'DESC'];
-
-type PrepareFindOptions = {
+export type PrepareFindOptions = {
     query: GetAllOptions;
     findOptions: FindOptions;
 };
+
+export const DEFAULT_PER_PAGE = 10;
+export const DEFAULT_SORT_DIRECTION = ['ASC', 'DESC'];
+export const DEFAULT_ORDERBY = 'createdAt';
 
 export const prepareFindOptions = (options: GetAllOptions): PrepareFindOptions => {
     /** SET SORT FOR QUERY **/
@@ -30,9 +25,11 @@ export const prepareFindOptions = (options: GetAllOptions): PrepareFindOptions =
             : DEFAULT_SORT_DIRECTION[0];
 
     const ORDERBY =
-        typeof options.orderby === 'string' && options.orderby !== undefined
+        typeof options.orderby === 'string' &&
+        options.orderby !== undefined &&
+        new RegExp(/^[a-zA-Z]{1}[a-zA-Z0-9\-_]*$/).test(options.orderby)
             ? options.orderby
-            : 'createdAt';
+            : DEFAULT_ORDERBY;
 
     /** SET PAGE FOR QUERY **/
     const PAGE = typeof options.page === 'number' && options.page > 0 ? options.page : 1;
@@ -60,4 +57,3 @@ export const prepareFindOptions = (options: GetAllOptions): PrepareFindOptions =
         },
     };
 };
-

@@ -1,8 +1,14 @@
 import { COMPARISON_OPERATORS, prepareFindFilter, FilterObject } from './lib/prepareFindFilter';
 import { JoiSchema } from '../../interface/joi';
 import Joi from 'joi';
-import { response } from 'express';
-import { isDeleted, isFound, isNextPage, isUpdated } from './mongodb';
+import { isDeleted, isFound, isNextPage, isUpdated, prepareFindOptions } from './mongodb';
+import {
+    DEFAULT_ORDERBY,
+    DEFAULT_PER_PAGE,
+    DEFAULT_SORT_DIRECTION,
+    GetAllOptions,
+    PrepareFindOptions
+} from './lib/prepareFindOptions';
 
 interface TestObjectSchema {
     string: string;
@@ -81,6 +87,55 @@ describe('prepareFindFilter', () => {
                 expect(error.code).toBe(5);
             });
         });
+    });
+});
+
+describe('prepareFindOptions', () => {
+
+    const defaultReturn = {
+        query: {
+            per_page: DEFAULT_PER_PAGE,
+            page: 1,
+            sort: DEFAULT_SORT_DIRECTION[0],
+            orderby: DEFAULT_ORDERBY,
+        },
+        findOptions: {
+            limit: DEFAULT_PER_PAGE,
+            skip: 0,
+            sort: [DEFAULT_ORDERBY, DEFAULT_SORT_DIRECTION[0]],
+        },
+    };
+
+    it('should be correct return object', () => {
+        const checkOptions: GetAllOptions = {
+            per_page: 20,
+            page: 5,
+            sort: 'DESC',
+            orderby: 'id',
+        };
+
+        const checkReturn: PrepareFindOptions = {
+            query: checkOptions,
+            findOptions: {
+                limit: checkOptions.per_page,
+                skip: checkOptions.per_page * (checkOptions.page - 1),
+                sort: [checkOptions.orderby, checkOptions.sort],
+            },
+        };
+
+        expect(prepareFindOptions(checkOptions)).toMatchObject(checkReturn);
+    });
+
+    it('should be change valid values & empty options too correct', () => {
+        expect.assertions(2);
+        /** VALID OPTIONS **/
+        const obj = { per_page: 'dwa', page: 'sad', orderby: '424_afds!', sort: 'asdasdas' };
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        expect(prepareFindOptions(obj)).toMatchObject(defaultReturn);
+
+        /** EMPTY OPTIONS **/
+        expect(prepareFindOptions({})).toMatchObject(defaultReturn);
     });
 });
 

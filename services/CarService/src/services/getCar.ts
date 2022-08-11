@@ -16,6 +16,9 @@ export const getCar = (mongodb: MongoDb<Car>) => {
             const carObject = await isFound(await mongodb.collection.findOne(carId));
 
             /** SUCCESS RESPONSE GRPC [GET_CAR]  */
+            if( "_id" in carObject){
+                carObject.id = carObject._id.toString();
+            }
             const carSchema = fromJsonToGrpc<CarSchema, Car>(new CarSchema(), carObject);
 
             const responseGRPC = new GetCarResponse();

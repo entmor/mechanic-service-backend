@@ -10,7 +10,7 @@ const CAR_SCHEMA: JoiSchema<CarSchema> = {
     mark: Joi.string().pattern(RegExpPatterns.name),
     model: Joi.string().pattern(RegExpPatterns.name),
     vin: Joi.string().pattern(RegExpPatterns.vin),
-    year: Joi.number().min(1886).max(2000),
+    year: Joi.number().min(1886),
     clientId: Joi.string().pattern(RegExpPatterns.mongoId),
 };
 
@@ -38,21 +38,27 @@ const updatedCarSchema: JoiSchema<Car> = {
 
 export const FindFilterValidator = (): JoiSchema<Car> => {
     const dateYear = new Date().getFullYear();
-    findFilterSchema.year = findFilterSchema.year.max(dateYear);
+    if ('max' in findFilterSchema.year) {
+        findFilterSchema.year = findFilterSchema.year.max(dateYear);
+    }
 
     return findFilterSchema;
 };
 
 export const SetCarValidator = (): Joi.ObjectSchema<CarSchema> => {
     const dateYear = new Date().getFullYear();
-    setCarSchema.year = setCarSchema.year.max(dateYear);
+    if ('max' in setCarSchema.year) {
+        setCarSchema.year = setCarSchema.year.max(dateYear);
+    }
 
     return Joi.object(setCarSchema);
 };
 
 export const UpdateCarValidator = (): Joi.ObjectSchema<Car> => {
     const dateYear = new Date().getFullYear();
-    updatedCarSchema.year = updatedCarSchema.year.max(dateYear);
+    if ('max' in updatedCarSchema.year) {
+        updatedCarSchema.year = updatedCarSchema.year.max(dateYear);
+    }
 
     return Joi.object(updatedCarSchema);
 };

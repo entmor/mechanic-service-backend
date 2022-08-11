@@ -8,7 +8,7 @@ import { grpcCarClient } from '../../grpcClients';
 type OmittedCar = Omit<Car, 'id' | 'createdAt' | 'updatedAt'>;
 
 type RequestApi = Request<any, any, OmittedCar>;
-type ResponseApi = Response<{ id: number } | ApiResponse>;
+type ResponseApi = Response<{ id: string } | ApiResponse>;
 
 export default function ({ body }: RequestApi, responseApi: ResponseApi) {
     try {
@@ -30,7 +30,7 @@ export default function ({ body }: RequestApi, responseApi: ResponseApi) {
             } else {
                 /** SUCCESS GRPC_REQUEST HANDLER [SET_CAR] **/
                 responseApi.json({
-                    id: +grpcResponse.getId(),
+                    id: grpcResponse.getId(),
                 });
             }
         });

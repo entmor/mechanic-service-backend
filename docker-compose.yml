@@ -11,7 +11,7 @@ services:
       - "6379:6379"
     volumes:
       - ./db/redis/dump:/data
-  user-service:
+  car-service:
     image: carservice:latest
     container_name: "car-service"
     hostname: car-service
@@ -20,9 +20,21 @@ services:
       - mongo
     command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --transpile-only --files ./services/CarService/src/carService.ts' ]
     volumes:
-      - ./services/CarService/src:/core/services/CarService/src/
+      - ./:/core/
+#      - /services/CarService/:/core/services/CarService/
     env_file:
-      - ./build/environments/development.env
+      - ./build/default.env
+  api-gateway:
+    image: carservice:latest
+    container_name: "api-gateway"
+    hostname: apigateway
+    command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --transpile-only --files ./services/ApiService/src/index.ts' ]
+    volumes:
+      - ./services/ApiService/src:/core/services/ApiService/src/
+    env_file:
+      - ./build/default.env
+    ports:
+      - 3000:3000
   ####
 #  mysql-db:
 #    image: mysql
@@ -34,17 +46,7 @@ services:
 #    env_file:
 #      - ./build/default.env
   ####
-#  api-gateway:
-#    image: course:latest
-#    container_name: "api-gateway"
-#    hostname: apigateway
-#    command: [ 'sh', '-c', './build/wait-for/wait-for mysql:3306 -- npm run ts-node-dev --respawn --transpile-only --files ./services/ApiService/src/index.ts' ]
-#    volumes:
-#      - ./services/ApiService/src:/core/services/ApiService/src/
-#    env_file:
-#      - ./build/default.env
-#    ports:
-#      - 3000:3000
+
   ####
 #  mailer-service:
 #    image: course:latest
