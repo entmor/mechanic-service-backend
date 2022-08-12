@@ -29,25 +29,51 @@ export const updateCar = (mongodb: MongoDb<Car>) => {
             const carId = new ObjectId(carValidated.id);
             delete carValidated.id;
 
-            const updatedResponse = await isUpdated(
-                await mongodb.collection.updateOne(
-                    {
-                        _id: carId,
-                    },
-                    {
-                        $set: {
-                            ...carValidated,
-                            updatedAt: Date.now(),
+            /** IS CAR ARLREADY EXISTS **/
+            let isCarExists = null;
+            if (carValidated.plate || carValidated.vin) {
+                const _or = [];
+
+                if (carValidated.plate) {
+                    _or.push({ plate: carValidated.plate });
+                }
+
+                if (carValidated.vin) {
+                    _or.push({ vin: carValidated.vin });
+                }
+
+                isCarExists = await mongodb.collection.findOne({
+                    $and: [{ _id: { $ne: carId } }, { $or: _or }],
+                });
+            }
+
+            if( isCarExists === null ){
+                const updatedResponse = await isUpdated(
+                    await mongodb.collection.updateOne(
+                        {
+                            _id: carId,
                         },
-                    }
-                )
-            );
+                        {
+                            $set: {
+                                ...carValidated,
+                                updatedAt: Date.now(),
+                            },
+                        }
+                    )
+                );
 
-            /** SUCCESS RESPONSE GRPC [UPDATE_CAR]  */
-            const responseGRPC = new UpdateCarResponse();
-            responseGRPC.setUpdated(updatedResponse);
+                /** SUCCESS RESPONSE GRPC [UPDATE_CAR]  */
+                const responseGRPC = new UpdateCarResponse();
+                responseGRPC.setUpdated(updatedResponse);
 
-            callback(null, responseGRPC);
+                callback(null, responseGRPC);
+            } else {
+                /** SEND RESPONSE_ERROR [SET_CAR] **/
+                callback({
+                    code: grpc.status.ALREADY_EXISTS,
+                    message: 'Car already exists',
+                });
+            }
         } catch (e) {
             /** SEND RESPONSE_ERROR [UPDATE_CAR] **/
             callback({
