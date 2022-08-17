@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { RegExpPatterns } from '../../../../helpers/validate';
 
 const setLoginSchema = {
     email: Joi.string().email({ minDomainSegments: 2 }).required(),
@@ -7,9 +8,7 @@ const setLoginSchema = {
 };
 
 const getLoginSchema = {
-    token: Joi.string()
-        .regex(/^([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_\-+/=]*)/)
-        .required(),
+    token: Joi.string().regex(RegExpPatterns.jwt).required(),
 };
 
 export const SetLoginValidator = Joi.object(setLoginSchema);

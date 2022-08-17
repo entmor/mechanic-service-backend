@@ -11,6 +11,7 @@ interface ICarService extends grpc.ServiceDefinition<grpc.UntypedServiceImplemen
   setCar: grpc.MethodDefinition<Car_Car_pb.SetCarRequest, Car_Car_pb.SetCarResponse>;
   updateCar: grpc.MethodDefinition<Car_Car_pb.UpdateCarRequest, Car_Car_pb.UpdateCarResponse>;
   deleteCar: grpc.MethodDefinition<Car_Car_pb.DeleteCarRequest, Car_Car_pb.DeleteCarResponse>;
+  getAllCars: grpc.MethodDefinition<Car_Car_pb.GetAllCarsRequest, Car_Car_pb.GetAllCarsResponse>;
 }
 
 export const CarService: ICarService;
@@ -20,6 +21,7 @@ export interface ICarServer extends grpc.UntypedServiceImplementation {
   setCar: grpc.handleUnaryCall<Car_Car_pb.SetCarRequest, Car_Car_pb.SetCarResponse>;
   updateCar: grpc.handleUnaryCall<Car_Car_pb.UpdateCarRequest, Car_Car_pb.UpdateCarResponse>;
   deleteCar: grpc.handleUnaryCall<Car_Car_pb.DeleteCarRequest, Car_Car_pb.DeleteCarResponse>;
+  getAllCars: grpc.handleUnaryCall<Car_Car_pb.GetAllCarsRequest, Car_Car_pb.GetAllCarsResponse>;
 }
 
 export class CarClient extends grpc.Client {
@@ -36,4 +38,7 @@ export class CarClient extends grpc.Client {
   deleteCar(argument: Car_Car_pb.DeleteCarRequest, callback: grpc.requestCallback<Car_Car_pb.DeleteCarResponse>): grpc.ClientUnaryCall;
   deleteCar(argument: Car_Car_pb.DeleteCarRequest, metadataOrOptions: grpc.Metadata | grpc.CallOptions | null, callback: grpc.requestCallback<Car_Car_pb.DeleteCarResponse>): grpc.ClientUnaryCall;
   deleteCar(argument: Car_Car_pb.DeleteCarRequest, metadata: grpc.Metadata | null, options: grpc.CallOptions | null, callback: grpc.requestCallback<Car_Car_pb.DeleteCarResponse>): grpc.ClientUnaryCall;
+  getAllCars(argument: Car_Car_pb.GetAllCarsRequest, callback: grpc.requestCallback<Car_Car_pb.GetAllCarsResponse>): grpc.ClientUnaryCall;
+  getAllCars(argument: Car_Car_pb.GetAllCarsRequest, metadataOrOptions: grpc.Metadata | grpc.CallOptions | null, callback: grpc.requestCallback<Car_Car_pb.GetAllCarsResponse>): grpc.ClientUnaryCall;
+  getAllCars(argument: Car_Car_pb.GetAllCarsRequest, metadata: grpc.Metadata | null, options: grpc.CallOptions | null, callback: grpc.requestCallback<Car_Car_pb.GetAllCarsResponse>): grpc.ClientUnaryCall;
 }

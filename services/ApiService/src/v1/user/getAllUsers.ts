@@ -5,7 +5,7 @@ import { User } from '../../../../../interface/user';
 import { ApiResponse, errorsHandler } from '../../errors';
 import { GetAllUsersRequest } from '../../../../../grpc/User/User_pb';
 import { grpcUserClient } from '../../grpcClients';
-import { Gender } from '../../../../../grpc/Instructor/Instructor_pb';
+import { Gender } from '../../../../../grpc/Schema/UserSchema_pb';
 
 type RequestApi = Request<null, null, null, GetAllRequest>;
 type ResponseApi = Response<GetAllResponse<User<GenderClient>> | ApiResponse>;

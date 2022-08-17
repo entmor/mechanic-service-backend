@@ -3,17 +3,19 @@ syntax = "proto3";
 package Car;
 
 message CarSchema{
-  int32 id = 1;
+  string id = 1;
   string plate = 2;
   string mark = 3;
   string model = 4;
   string vin = 5;
-  string year = 6;
-  int32 client_id = 7;
+  int32 year = 6;
+  string client_id = 7;
+  int64 created_at = 8;
+  int64 updated_at = 9;
 }
 
 message GetCarRequest{
-  int32 id = 1;
+  string id = 1;
 }
 
 message GetCarResponse{
@@ -25,7 +27,7 @@ message SetCarRequest{
 }
 
 message SetCarResponse{
-  CarSchema car = 1;
+  string id = 1;
 }
 
 message UpdateCarRequest{
@@ -33,15 +35,33 @@ message UpdateCarRequest{
 }
 
 message UpdateCarResponse{
-  CarSchema car = 1;
+  bool updated = 1;
 }
 
 message DeleteCarRequest{
-  int32 id = 1;
+  string id = 1;
 }
 
 message DeleteCarResponse{
   bool deleted = 1;
+}
+
+message GetAllCarsRequest{
+  int32 page = 1;
+  int32 per_page = 2;
+  string sort = 3;
+  string orderby = 4;
+  optional string where = 5;
+
+}
+
+message GetAllCarsResponse{
+  int32 count = 1;
+  int32 page = 2;
+  int32 per_page = 3;
+  string sort = 4;
+  bool is_next_page = 5;
+  repeated CarSchema cars = 6;
 }
 
 service Car{
@@ -53,5 +73,7 @@ service Car{
   rpc UpdateCar (UpdateCarRequest) returns (UpdateCarResponse) {};
 
   rpc DeleteCar (DeleteCarRequest) returns (DeleteCarResponse) {};
+
+  rpc GetAllCars (GetAllCarsRequest) returns (GetAllCarsResponse) {};
 }
 

@@ -1,4 +1,4 @@
-FROM node:18.1.0 AS builder
+FROM node:16.16.0 AS builder
 COPY . ./core
 WORKDIR /core
 RUN chmod +x ./build/builder-start.sh

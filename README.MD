@@ -1,4 +1,4 @@
-<h1>Course</h1>
+<h1>Car mechanic App</h1>
 
 <h2>Dev Mode</h2>
 
@@ -28,3 +28,9 @@ If u need create new GRPC Files from proto, u can copy from builded image or cre
 
 <h4>4) Done, you can close both consoles </h4>~~
 
+<h2>Tests</h2>
+
+1) First, build image and start components
+2) <code>npm install</code>
+3) Run test <code>npm run test</code>
+4) if u want simulate broken services, use <code> npm run test-full</code>

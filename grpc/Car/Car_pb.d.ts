@@ -4,8 +4,8 @@
 import * as jspb from "google-protobuf";
 
 export class CarSchema extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   getPlate(): string;
   setPlate(value: string): void;
@@ -19,11 +19,17 @@ export class CarSchema extends jspb.Message {
   getVin(): string;
   setVin(value: string): void;
 
-  getYear(): string;
-  setYear(value: string): void;
+  getYear(): number;
+  setYear(value: number): void;
 
-  getClientId(): number;
-  setClientId(value: number): void;
+  getClientId(): string;
+  setClientId(value: string): void;
+
+  getCreatedAt(): number;
+  setCreatedAt(value: number): void;
+
+  getUpdatedAt(): number;
+  setUpdatedAt(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CarSchema.AsObject;
@@ -37,19 +43,21 @@ export class CarSchema extends jspb.Message {
 
 export namespace CarSchema {
   export type AsObject = {
-    id: number,
+    id: string,
     plate: string,
     mark: string,
     model: string,
     vin: string,
-    year: string,
-    clientId: number,
+    year: number,
+    clientId: string,
+    createdAt: number,
+    updatedAt: number,
   }
 }
 
 export class GetCarRequest extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetCarRequest.AsObject;
@@ -63,7 +71,7 @@ export class GetCarRequest extends jspb.Message {
 
 export namespace GetCarRequest {
   export type AsObject = {
-    id: number,
+    id: string,
   }
 }
 
@@ -112,10 +120,8 @@ export namespace SetCarRequest {
 }
 
 export class SetCarResponse extends jspb.Message {
-  hasCar(): boolean;
-  clearCar(): void;
-  getCar(): CarSchema | undefined;
-  setCar(value?: CarSchema): void;
+  getId(): string;
+  setId(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SetCarResponse.AsObject;
@@ -129,7 +135,7 @@ export class SetCarResponse extends jspb.Message {
 
 export namespace SetCarResponse {
   export type AsObject = {
-    car?: CarSchema.AsObject,
+    id: string,
   }
 }
 
@@ -156,10 +162,8 @@ export namespace UpdateCarRequest {
 }
 
 export class UpdateCarResponse extends jspb.Message {
-  hasCar(): boolean;
-  clearCar(): void;
-  getCar(): CarSchema | undefined;
-  setCar(value?: CarSchema): void;
+  getUpdated(): boolean;
+  setUpdated(value: boolean): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UpdateCarResponse.AsObject;
@@ -173,13 +177,13 @@ export class UpdateCarResponse extends jspb.Message {
 
 export namespace UpdateCarResponse {
   export type AsObject = {
-    car?: CarSchema.AsObject,
+    updated: boolean,
   }
 }
 
 export class DeleteCarRequest extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): DeleteCarRequest.AsObject;
@@ -193,7 +197,7 @@ export class DeleteCarRequest extends jspb.Message {
 
 export namespace DeleteCarRequest {
   export type AsObject = {
-    id: number,
+    id: string,
   }
 }
 
@@ -214,6 +218,86 @@ export class DeleteCarResponse extends jspb.Message {
 export namespace DeleteCarResponse {
   export type AsObject = {
     deleted: boolean,
+  }
+}
+
+export class GetAllCarsRequest extends jspb.Message {
+  getPage(): number;
+  setPage(value: number): void;
+
+  getPerPage(): number;
+  setPerPage(value: number): void;
+
+  getSort(): string;
+  setSort(value: string): void;
+
+  getOrderby(): string;
+  setOrderby(value: string): void;
+
+  hasWhere(): boolean;
+  clearWhere(): void;
+  getWhere(): string;
+  setWhere(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllCarsRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllCarsRequest): GetAllCarsRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllCarsRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllCarsRequest;
+  static deserializeBinaryFromReader(message: GetAllCarsRequest, reader: jspb.BinaryReader): GetAllCarsRequest;
+}
+
+export namespace GetAllCarsRequest {
+  export type AsObject = {
+    page: number,
+    perPage: number,
+    sort: string,
+    orderby: string,
+    where: string,
+  }
+}
+
+export class GetAllCarsResponse extends jspb.Message {
+  getCount(): number;
+  setCount(value: number): void;
+
+  getPage(): number;
+  setPage(value: number): void;
+
+  getPerPage(): number;
+  setPerPage(value: number): void;
+
+  getSort(): string;
+  setSort(value: string): void;
+
+  getIsNextPage(): boolean;
+  setIsNextPage(value: boolean): void;
+
+  clearCarsList(): void;
+  getCarsList(): Array<CarSchema>;
+  setCarsList(value: Array<CarSchema>): void;
+  addCars(value?: CarSchema, index?: number): CarSchema;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllCarsResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllCarsResponse): GetAllCarsResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllCarsResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllCarsResponse;
+  static deserializeBinaryFromReader(message: GetAllCarsResponse, reader: jspb.BinaryReader): GetAllCarsResponse;
+}
+
+export namespace GetAllCarsResponse {
+  export type AsObject = {
+    count: number,
+    page: number,
+    perPage: number,
+    sort: string,
+    isNextPage: boolean,
+    carsList: Array<CarSchema.AsObject>,
   }
 }
 

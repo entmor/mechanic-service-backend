@@ -4,20 +4,24 @@
   "description": "CV - APP",
   "main": "app.js",
   "scripts": {
+    "ts-node": "ts-node",
     "ts-node-dev": "ts-node-dev",
-    "test": "./node_modules/.bin/env-cmd -f ./build/test.env jest --verbose --watchAll"
+    "test": "./node_modules/.bin/env-cmd -f ./build/test.env jest --verbose --watchAll --detectOpenHandles",
+    "test-full": "./node_modules/.bin/env-cmd --no-override -e test-full -f ./build/test.env  jest --verbose --watchAll --detectOpenHandles"
+
   },
   "author": "ENTMOR",
   "license": "ISC",
   "devDependencies": {
+    "@shelf/jest-mongodb": "^4.0.0",
     "@types/express": "^4.17.13",
+    "@types/google-protobuf": "^3.15.6",
     "@types/ioredis": "^4.28.10",
     "@types/jest": "^27.4.1",
     "@types/joi": "^17.2.3",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^17.0.29",
     "@types/nodemailer": "^6.4.4",
-    "@types/sequelize": "^4.28.12",
     "@types/supertest": "^2.0.12",
     "@types/validator": "^13.7.2",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
@@ -26,16 +30,17 @@
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "jest": "^27.5.1",
+    "google-protobuf": "^3.21.0",
+    "jest": "^28.1.3",
     "prettier": "2.4.1",
     "supertest": "^6.2.3",
-    "ts-jest": "^27.1.4",
-    "ts-node": "^10.7.0",
-    "ts-node-dev": "^1.1.8",
-    "typescript": "^4.6.3"
+    "ts-jest": "^28.0.7",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.4.1",
+    "@grpc/grpc-js": "^1.6.8",
     "body-parser": "^1.20.0",
     "bullmq": "^1.59.4",
     "express": "^4.18.0",
@@ -45,9 +50,6 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.8.0",
-    "mysql2": "^2.3.3",
-    "nodemailer": "^6.7.3",
-    "rxjs": "^7.5.5",
-    "sequelize": "^6.7.0"
+    "nodemailer": "^6.7.3"
   }
 }

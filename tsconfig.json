@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    //    "module": "commonjs",
+    "module": "commonjs",
+//    "types": ["node", "jest", "express"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2021", // es5
+    "target": "es2022", // es5
     "noImplicitAny": true,
     "moduleResolution": "node",
     "sourceMap": true,
@@ -16,5 +17,6 @@
       ]
     }
   },
-  "exclude": ["grpc/**/*"],
+  "include": ["services/**/*"],
+  "exclude": ["grpc/**/*"]
 }
