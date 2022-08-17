@@ -8,7 +8,7 @@ import { updateCar } from './services/updateCar';
 import { deleteCar } from './services/deleteCar';
 import { getAllCars } from './services/getAllCars';
 
-const mongodb = new MongoDb<Car>('cv', 'cars');
+const mongodb = new MongoDb<Car>('cars');
 
 mongodb
     .connection()

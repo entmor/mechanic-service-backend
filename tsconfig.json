@@ -17,5 +17,6 @@
       ]
     }
   },
+  "include": ["services/**/*"],
   "exclude": ["grpc/**/*"]
 }

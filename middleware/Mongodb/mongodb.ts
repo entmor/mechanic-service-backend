@@ -2,7 +2,7 @@ import { status } from '@grpc/grpc-js';
 import { Collection, Db, MongoClient } from 'mongodb';
 import { prepareFindFilter } from './lib/prepareFindFilter';
 import { prepareFindOptions } from './lib/prepareFindOptions';
-import { isDeleted, isUpdated, isFound } from "./lib/checkResponse";
+import { isDeleted, isUpdated, isFound } from './lib/checkResponse';
 
 export class MongoDb<TCollection> {
     private client: MongoClient;
@@ -11,10 +11,10 @@ export class MongoDb<TCollection> {
 
     private dbName: string;
     private collectionName: string;
-    private url_mongo = 'mongodb://root:example@mongo:27017';
+    private url_mongo = process.env.MONGO_URL;
 
-    constructor(dbName?: string, collection?: string) {
-        this.dbName = dbName || process.env.MONGO_DB;
+    constructor(collection?: string) {
+        this.dbName = process.env.MONGO_DB;
         this.collectionName = collection || process.env.MONGO_COLLECTION;
     }
 

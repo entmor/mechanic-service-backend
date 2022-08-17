@@ -27,6 +27,7 @@ app.use('/v1', routes);
 app.use('*', function (req, res) {
     res.status(404).json({
         http_code: 404,
+        message: 'Wrong URL',
     });
 });
 

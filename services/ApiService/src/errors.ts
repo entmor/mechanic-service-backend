@@ -42,7 +42,8 @@ export const errorsHandler = (error: ServiceError) => {
             break;
         case 14:
             apiResponse = {
-                ...error,
+                message: 'Server Error',
+                //...error,
                 http_code: 503,
             };
             break;
@@ -54,7 +55,8 @@ export const errorsHandler = (error: ServiceError) => {
             break;
         default:
             apiResponse = {
-                ...error,
+                message: 'Server Error',
+                //...error,
                 http_code: 500,
             };
     }

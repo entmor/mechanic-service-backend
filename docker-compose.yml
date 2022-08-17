@@ -24,6 +24,8 @@ services:
 #      - /services/CarService/:/core/services/CarService/
     env_file:
       - ./build/default.env
+    ports:
+      - 50053:50050
   api-gateway:
     image: carservice:latest
     container_name: "api-gateway"

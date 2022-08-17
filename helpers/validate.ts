@@ -63,5 +63,6 @@ export const RegExpPatterns: Patterns = {
     phone: new RegExp(/^[0-9 ()+\-\p{N}]*$/iu),
     gender: new RegExp(/^(GENDER_FEMALE|GENDER_MALE|GENDER_DIVERS)$/i),
     birthday: new RegExp(/^[0-9]{2}-[0-9]{2}-[0-9]{4}$/i),
-    yearPattern: new RegExp(/^\d{4}$/i)
+    yearPattern: new RegExp(/^\d{4}$/i),
+    jwt: new RegExp(/^([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_\-+/=]*)/),
 };

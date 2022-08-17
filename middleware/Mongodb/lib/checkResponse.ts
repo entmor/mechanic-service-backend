@@ -16,11 +16,11 @@ export const isFound = async <T>(
 };
 
 export const isDeleted = async (
-    response: { ok: 0 | 1 },
+        response: { deletedCount:number },
     errorMessage?: string,
     errorCode?: number
 ): Promise<boolean> => {
-    if (response.ok === 1) {
+    if (response.deletedCount === 1) {
         return true;
     }
 

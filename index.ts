@@ -1,5 +1,5 @@
 import { prepareFindFilter } from './middleware/Mongodb/mongodb';
-import { FindFilterValidator } from './services/CarService/src/models/validator';
+import { FindFilterValidator } from './services/CarService/src/models/validator.joi';
 import { Car } from './interface/car';
 
 async function main() {

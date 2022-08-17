@@ -7,7 +7,7 @@ import {
     DEFAULT_PER_PAGE,
     DEFAULT_SORT_DIRECTION,
     GetAllOptions,
-    PrepareFindOptions
+    PrepareFindOptions,
 } from './lib/prepareFindOptions';
 
 interface TestObjectSchema {
@@ -91,7 +91,6 @@ describe('prepareFindFilter', () => {
 });
 
 describe('prepareFindOptions', () => {
-
     const defaultReturn = {
         query: {
             per_page: DEFAULT_PER_PAGE,
@@ -144,12 +143,12 @@ describe('checkResponse', () => {
         expect.assertions(2);
 
         const deleted = await isDeleted({
-            ok: 1,
+            deletedCount: 1,
         });
         expect(deleted).toBeTruthy();
 
         return isDeleted({
-            ok: 0,
+            deletedCount: 0,
         }).catch((e) => {
             expect(e.code).toBe(5);
         });

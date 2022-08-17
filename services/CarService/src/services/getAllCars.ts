@@ -8,7 +8,7 @@ import {
 } from '../../../../middleware/Mongodb/mongodb';
 import { fromJsonToGrpc } from '../../../../helpers/grpc';
 import { Car } from '../../../../interface/car';
-import { FindFilterValidator } from '../models/validator';
+import { FindFilterValidator } from '../models/validator.joi';
 
 type Call = grpc.ServerUnaryCall<GetAllCarsRequest, GetAllCarsResponse>;
 type Callback = grpc.sendUnaryData<GetAllCarsResponse>;

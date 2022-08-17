@@ -3,7 +3,7 @@ import { SetCarRequest, SetCarResponse } from '../../../../grpc/Car/Car_pb';
 import { MongoDb } from '../../../../middleware/Mongodb/mongodb';
 import { Car } from '../../../../interface/car';
 import { JoiValidator } from '../../../../helpers/validate';
-import { SetCarValidator } from '../models/validator';
+import { SetCarValidator } from '../models/validator.joi';
 
 type Call = grpc.ServerUnaryCall<SetCarRequest, SetCarResponse>;
 type Callback = grpc.sendUnaryData<SetCarResponse>;
