@@ -15,7 +15,7 @@ export default function ({ query }: RequestApi, responseApi: ResponseApi, next: 
 
         requestGRPC.setPage(+query.page || +'');
         requestGRPC.setPerPage(+query.per_page || +'');
-        requestGRPC.setOrderby(query.orderBy || '');
+        requestGRPC.setOrderby(query.orderby || '');
         requestGRPC.setSort(query.sort || '');
         requestGRPC.setWhere(JSON.stringify(query.where || {}));
 
