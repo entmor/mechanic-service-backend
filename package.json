@@ -6,8 +6,8 @@
   "scripts": {
     "ts-node": "ts-node",
     "ts-node-dev": "ts-node-dev",
-    "test": "./node_modules/.bin/env-cmd -f ./build/test.env jest --verbose --watchAll --detectOpenHandles",
-    "test-full": "./node_modules/.bin/env-cmd --no-override -e test-full -f ./build/test.env  jest --verbose --watchAll --detectOpenHandles"
+    "test": "./node_modules/.bin/env-cmd -r ./build/environments/.env-cmdrc -e default jest --verbose --watchAll --detectOpenHandles",
+    "test-full": "./node_modules/.bin/env-cmd -r ./build/environments/.env-cmdrc -e default,test-full jest --verbose --watchAll --detectOpenHandles"
 
   },
   "author": "ENTMOR",
