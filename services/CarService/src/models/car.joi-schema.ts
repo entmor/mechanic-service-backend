@@ -10,13 +10,15 @@ const CAR_SCHEMA: JoiSchema<CarSchema> = {
     mark: Joi.string().pattern(RegExpPatterns.name),
     model: Joi.string().pattern(RegExpPatterns.name),
     vin: Joi.string().pattern(RegExpPatterns.vin),
-    year: Joi.number().min(1886),
+    year: Joi.number().integer().min(1886),
     clientId: Joi.string().pattern(RegExpPatterns.mongoId),
 };
 
 const findFilterSchema: JoiSchema<Car> = {
     ...CAR_SCHEMA,
     id: Joi.string().pattern(RegExpPatterns.mongoId),
+    createdAt: Joi.string().pattern(RegExpPatterns.number),
+    updatedAt: Joi.string().pattern(RegExpPatterns.number),
 };
 
 const setCarSchema: JoiSchema<CarSchema> = {
