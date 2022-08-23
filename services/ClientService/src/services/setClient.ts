@@ -4,7 +4,6 @@ import { SetClientRequest, SetClientResponse } from '../../../../grpc/Client/Cli
 import { Client } from '../../../../interface/client.interface';
 import { JoiValidator } from '../../../../helpers/validate';
 import { SetClientValidator } from '../models/client.joi-schema';
-import { SetCarResponse } from '../../../../grpc/Car/Car_pb';
 
 type Call = grpc.ServerUnaryCall<SetClientRequest, SetClientResponse>;
 type Callback = grpc.sendUnaryData<SetClientResponse>;
@@ -18,6 +17,7 @@ export const setClient = (mongodb: MongoDb<Client>) => {
              * GET CLIENT FROM GRPC && VALIDATE
              */
             const clientObjectFromGRPC = request.getClient().toObject();
+            console.log('tutaj');
             const clientValidated = await JoiValidator<ClientValidated, ClientValidated>(
                 SetClientValidator,
                 clientObjectFromGRPC,
@@ -26,7 +26,7 @@ export const setClient = (mongodb: MongoDb<Client>) => {
                     removeEmptyProperties: true,
                 }
             );
-
+            console.log('tutaj tez');
             const insertResponse = await mongodb.collection.insertOne({
                 ...clientValidated,
                 createdAt: Date.now(),
@@ -34,11 +34,12 @@ export const setClient = (mongodb: MongoDb<Client>) => {
             });
 
             /** SUCCESS RESPONSE GRPC [SET_CLIENT]  */
-            const responseGRPC = new SetCarResponse();
+            const responseGRPC = new SetClientResponse();
             responseGRPC.setId(insertResponse.insertedId.toString());
 
             callback(null, responseGRPC);
         } catch (e) {
+            console.log(e);
             /** SEND RESPONSE_ERROR [SET_CLIENT] **/
             callback({
                 code: e.code || grpc.status.INTERNAL,

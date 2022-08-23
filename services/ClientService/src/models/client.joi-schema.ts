@@ -8,7 +8,11 @@ type ClientSchema = Omit<Client, 'id'>;
 const CLIENT_SCHEMA: JoiSchema<ClientSchema> = {
     name: Joi.string().pattern(RegExpPatterns.name),
     type: Joi.string().pattern(RegExpPatterns.clientType),
-    taxNumber: Joi.string().pattern(RegExpPatterns.name),
+    taxNumber: Joi.when('type', {
+        is: 'business',
+        then: Joi.number().integer().required(),
+        otherwise: Joi.number().integer().optional(),
+    }),
     phone: Joi.string().pattern(RegExpPatterns.phone),
     email: Joi.string().email({ minDomainSegments: 2 }),
     gender: Joi.string().pattern(RegExpPatterns.gender),
@@ -20,12 +24,16 @@ const CLIENT_SCHEMA: JoiSchema<ClientSchema> = {
 const findClientsFilterSchema: JoiSchema<Client> = {
     ...CLIENT_SCHEMA,
     id: Joi.string().pattern(RegExpPatterns.mongoId),
+    createdAt: Joi.string().pattern(RegExpPatterns.number),
+    updatedAt: Joi.string().pattern(RegExpPatterns.number),
 };
 
 const setClientSchema: JoiSchema<ClientSchema> = {
     ...CLIENT_SCHEMA,
     name: CLIENT_SCHEMA.name.required(),
     phone: CLIENT_SCHEMA.phone.required(),
+    type: CLIENT_SCHEMA.type.required(),
+    gender: CLIENT_SCHEMA.gender.required(),
 };
 
 const updateClientSchema: JoiSchema<Client> = {

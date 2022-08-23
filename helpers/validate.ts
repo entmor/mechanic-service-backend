@@ -58,6 +58,7 @@ interface Patterns {
 export const RegExpPatterns: Patterns = {
     mongoId: new RegExp(/^[a-fA-F0-9]{24}$/),
     plate: new RegExp(/^[\p{L}\p{N}]*$/iu),
+    number: new RegExp(/^[0-9]*$/iu),
     name: new RegExp(/^[- \p{L}\p{N}]*$/iu),
     vin: new RegExp(/^[0-9wertyupasdfghjklzxxcvbnmWERTYUPASDFGHJKLZXCVBNM]{17}$/iu),
     phone: new RegExp(/^[0-9 ()+\-\p{N}]*$/iu),

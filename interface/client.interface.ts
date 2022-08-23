@@ -1,11 +1,11 @@
 export interface Client {
     id?: string;
     name: string;
-    type: 'personal' | 'business';
-    taxNumber?: string;
+    type: string;
+    taxNumber?: number;
     phone: string;
     email: string;
-    gender: 'male' | 'female' | 'divers';
+    gender: string;
     street: string;
     city: string;
     zipCode: string;
