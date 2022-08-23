@@ -3,7 +3,7 @@ import { UpdateCarRequest, UpdateCarResponse } from '../../../../grpc/Car/Car_pb
 import { isUpdated, MongoDb } from '../../../../middleware/Mongodb/mongodb';
 import { Car } from '../../../../interface/car';
 import { JoiValidator } from '../../../../helpers/validate';
-import { UpdateCarValidator } from '../models/validator.joi';
+import { UpdateCarValidator } from '../models/car.joi-schema';
 import { ObjectId } from 'mongodb';
 
 type Call = grpc.ServerUnaryCall<UpdateCarRequest, UpdateCarResponse>;
@@ -68,7 +68,7 @@ export const updateCar = (mongodb: MongoDb<Car>) => {
 
                 callback(null, responseGRPC);
             } else {
-                /** SEND RESPONSE_ERROR [SET_CAR] **/
+                /** SEND RESPONSE_ERROR [UPDATE_CAR] **/
                 callback({
                     code: grpc.status.ALREADY_EXISTS,
                     message: 'Car already exists',
