@@ -8,7 +8,7 @@ import {
 } from '../../../../middleware/Mongodb/mongodb';
 import { fromJsonToGrpc } from '../../../../helpers/grpc';
 import { Car } from '../../../../interface/car';
-import { FindFilterValidator } from '../models/validator.joi';
+import { FindFilterValidator } from '../models/car.joi-schema';
 
 type Call = grpc.ServerUnaryCall<GetAllCarsRequest, GetAllCarsResponse>;
 type Callback = grpc.sendUnaryData<GetAllCarsResponse>;
@@ -61,7 +61,7 @@ export const getAllCars = (mongodb: MongoDb<Car>) => {
             callback(null, responseGRPC);
             //
         } catch (e) {
-            /** SEND RESPONSE_ERROR [GET_CAR] **/
+            /** SEND RESPONSE_ERROR [GET_ALL_CARS] **/
             callback({
                 code: e.code || grpc.status.INTERNAL,
                 message: e.message || 'SERVER ERROR',
