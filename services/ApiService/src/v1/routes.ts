@@ -14,6 +14,12 @@ import setCar from './cars/setCar';
 import updateCar from './cars/updateCar';
 import getAllCars from './cars/getAllCars';
 
+import getAllClients from './clients/getAllClients';
+import getClient from './clients/getClient';
+import setClient from './clients/setClient';
+import updateClient from './clients/updateClient';
+import deleteClient from './clients/deleteClient';
+
 const authUserType = (req: Request, res: Response, next: NextFunction) => {
     res.locals.type = 'user';
     next();
@@ -34,6 +40,13 @@ routes.get('/car/:id', [getCar]);
 routes.post('/car', [setCar]);
 routes.put('/car', [updateCar]);
 routes.delete('/car/:id', [deleteCar]);
+
+routes.get('/client/all', getAllClients);
+routes.get('/client', getAllClients);
+routes.get('/client/:id', getClient);
+routes.post('/client', setClient);
+routes.put('/client', updateClient);
+routes.delete('/client/:id', deleteClient);
 
 routes.post('/auth', getAuth);
 

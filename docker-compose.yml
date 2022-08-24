@@ -26,6 +26,21 @@ services:
       - ./build/default.env
     ports:
       - 50053:50050
+  client-service:
+    image: carservice:latest
+    container_name: "client-service"
+    hostname: client-service
+    restart: always
+    depends_on:
+      - mongo
+    command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --transpile-only --files ./services/ClientService/src/clientService.ts' ]
+    volumes:
+      - ./:/core/
+    #      - /services/CarService/:/core/services/CarService/
+    env_file:
+      - ./build/default.env
+    ports:
+      - 50054:50050
   api-gateway:
     image: carservice:latest
     container_name: "api-gateway"
