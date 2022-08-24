@@ -17,11 +17,9 @@ export const getAllCars = (mongodb: MongoDb<Car>) => {
     return async ({ request }: Call, callback: Callback): Promise<void> => {
         try {
             /**  PREPARE DATA FROM GRPC **/
-
             const where = request.hasWhere() ? JSON.parse(request.getWhere()) : {};
             const preparedWhere = await prepareFindFilter<Car>(FindFilterValidator(), where);
 
-            console.log(preparedWhere);
             const preparedFindOptions = prepareFindOptions({
                 per_page: +request.getPerPage(),
                 page: +request.getPage(),
