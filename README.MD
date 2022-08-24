@@ -34,3 +34,5 @@ If u need create new GRPC Files from proto, u can copy from builded image or cre
 2) <code>npm install</code>
 3) Run test <code>npm run test</code>
 4) if u want simulate broken services, use <code> npm run test-full</code>
+
+<h1>API ROUTE</h1>
