@@ -22,7 +22,9 @@ export const getAllClients = (mongodb: MongoDb<Client>) => {
         try {
             /**  PREPARE DATA FROM GRPC **/
             const where = request.hasWhere() ? JSON.parse(request.getWhere()) : {};
-            const preparedWhere = await prepareFindFilter<Client>(FindClientsFilter, where);
+            const preparedWhere = await prepareFindFilter<Client>(FindClientsFilter, where)
+
+            console.log(preparedWhere);
 
             const preparedFindOptions = prepareFindOptions({
                 per_page: +request.getPerPage(),

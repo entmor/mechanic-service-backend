@@ -42,7 +42,6 @@ export default function ({ query }: RequestApi, responseApi: ResponseApi): void 
             }
         });
     } catch (error) {
-        console.log(error);
         responseApi.status(500).json({
             code: 13,
             http_code: 500,

@@ -1,9 +1,7 @@
 import { MongoDb } from '../../../middleware/Mongodb/mongodb';
-import { Car } from '../../../interface/car';
 import { App } from '../src/app';
 import request from 'supertest';
 import { execSync } from 'child_process';
-import { date } from 'joi';
 import { Client } from '../../../interface/client.interface';
 
 const URL = '/v1/client';
@@ -216,7 +214,6 @@ describe(`[API ROUTER][${URL}]`, () => {
                 execSync('docker kill mongo');
 
                 const api_response = await app.get(URL);
-                console.log(api_response.body);
                 expect(api_response.statusCode).toBe(500);
             });
 
@@ -224,7 +221,6 @@ describe(`[API ROUTER][${URL}]`, () => {
                 execSync('docker kill client-service');
 
                 const api_response = await app.get(URL);
-                console.log(api_response.body);
                 expect(api_response.statusCode).toBe(503);
             });
 

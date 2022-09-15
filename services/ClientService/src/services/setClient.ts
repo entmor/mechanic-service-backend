@@ -17,16 +17,17 @@ export const setClient = (mongodb: MongoDb<Client>) => {
              * GET CLIENT FROM GRPC && VALIDATE
              */
             const clientObjectFromGRPC = request.getClient().toObject();
-            console.log('tutaj');
             const clientValidated = await JoiValidator<ClientValidated, ClientValidated>(
                 SetClientValidator,
                 clientObjectFromGRPC,
                 {
                     removeId: true,
                     removeEmptyProperties: true,
+                    excludeKeys: ['createdAt', 'updatedAt'],
+                    removeZeroValueProperties: ['taxNumber'],
                 }
             );
-            console.log('tutaj tez');
+
             const insertResponse = await mongodb.collection.insertOne({
                 ...clientValidated,
                 createdAt: Date.now(),

@@ -11,17 +11,17 @@ services:
       - "6379:6379"
     volumes:
       - ./db/redis/dump:/data
-  car-service:
+  vehicle-service:
     image: carservice:latest
-    container_name: "car-service"
-    hostname: car-service
+    container_name: "vehicle-service"
+    hostname: vehicle-service
     restart: always
     depends_on:
       - mongo
-    command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --transpile-only --files ./services/CarService/src/carService.ts' ]
+    command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --transpile-only --files ./services/VehicleService/src/vehicleService.ts' ]
     volumes:
       - ./:/core/
-#      - /services/CarService/:/core/services/CarService/
+#      - /services/VehicleService/:/core/services/VehicleService/
     env_file:
       - ./build/default.env
     ports:
@@ -36,7 +36,7 @@ services:
     command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --transpile-only --files ./services/ClientService/src/clientService.ts' ]
     volumes:
       - ./:/core/
-    #      - /services/CarService/:/core/services/CarService/
+    #      - /services/ClientService/:/core/services/ClientService/
     env_file:
       - ./build/default.env
     ports:

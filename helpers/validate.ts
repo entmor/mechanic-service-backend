@@ -5,11 +5,15 @@ import { removeEmptyProperties } from './object';
 interface Option {
     removeId?: boolean;
     removeEmptyProperties?: boolean;
+    excludeKeys?: Array<string>;
+    removeZeroValueProperties?: Array<string>;
 }
 
 const defaultOption: Option = {
     removeId: false,
     removeEmptyProperties: false,
+    excludeKeys: [],
+    removeZeroValueProperties: [],
 };
 
 export const JoiValidator = async <T, TReturn>(
@@ -24,6 +28,15 @@ export const JoiValidator = async <T, TReturn>(
     };
 
     let new_object: Partial<TReturn>;
+
+    Object.entries(object).filter(([key, value]) => {
+        if (
+            options.excludeKeys.indexOf(key) >= 0 ||
+            (options.removeZeroValueProperties.indexOf(key) >= 0 && value === 0)
+        ) {
+            delete object[key];
+        }
+    });
 
     // REMOVE PROPERTY ID FROM OBJECT
     if (options.removeId && typeof object.id !== undefined) {
@@ -57,13 +70,14 @@ interface Patterns {
 
 export const RegExpPatterns: Patterns = {
     mongoId: new RegExp(/^[a-fA-F0-9]{24}$/),
-    plate: new RegExp(/^[\p{L}\p{N}]*$/iu),
+    plate: new RegExp(/^[- \p{L}\p{N}]*$/iu),
     number: new RegExp(/^[0-9]*$/iu),
-    name: new RegExp(/^[- \p{L}\p{N}]*$/iu),
+    name: new RegExp(/^[-.,:=/\\() \p{L}\p{N}]*$/iu),
     vin: new RegExp(/^[0-9wertyupasdfghjklzxxcvbnmWERTYUPASDFGHJKLZXCVBNM]{17}$/iu),
     phone: new RegExp(/^[0-9 ()+\-\p{N}]*$/iu),
     gender: new RegExp(/^(male|female|divers)$/i),
-    zipCode: new RegExp(/^[0-9-]*$/iu),
+    address: new RegExp(/^[-., /\\() \p{L}\p{N}]*$/iu),
+    zipCode: new RegExp(/^[0-9- a-zA-Z]*$/iu),
     clientType: new RegExp(/^(personal|business)$/i),
     birthday: new RegExp(/^[0-9]{2}-[0-9]{2}-[0-9]{4}$/i),
     yearPattern: new RegExp(/^\d{4}$/i),
