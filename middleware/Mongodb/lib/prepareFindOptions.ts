@@ -17,6 +17,8 @@ export const DEFAULT_SORT_DIRECTION = ['ASC', 'DESC'];
 export const DEFAULT_ORDERBY = 'createdAt';
 
 export const prepareFindOptions = (options: GetAllOptions): PrepareFindOptions => {
+    const findOptions: FindOptions = {};
+
     /** SET SORT FOR QUERY **/
     const SORT_DIRECTION =
         typeof options.sort === 'string' &&
@@ -36,12 +38,19 @@ export const prepareFindOptions = (options: GetAllOptions): PrepareFindOptions =
 
     /** SET PER_PAGE FOR QUERY **/
     const PER_PAGE =
-        typeof options.per_page === 'number' && options.per_page > 0
+        typeof options.per_page === 'number' && options.per_page >= 0
             ? options.per_page
             : DEFAULT_PER_PAGE;
 
     /** SET OFFSET FOR QUERY **/
     const OFFSET = PAGE === 1 || PAGE === 0 ? 0 : PER_PAGE * (PAGE - 1);
+
+    findOptions.sort = [ORDERBY, SORT_DIRECTION];
+
+    if (PER_PAGE > 0) {
+        findOptions.limit = PER_PAGE;
+        findOptions.skip = OFFSET;
+    }
 
     return {
         query: {
@@ -50,10 +59,6 @@ export const prepareFindOptions = (options: GetAllOptions): PrepareFindOptions =
             orderby: ORDERBY,
             per_page: PER_PAGE,
         },
-        findOptions: {
-            limit: PER_PAGE,
-            skip: OFFSET,
-            sort: [ORDERBY, SORT_DIRECTION],
-        },
+        findOptions,
     };
 };

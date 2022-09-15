@@ -1,5 +1,6 @@
 import { JoiSchemaList, JoiSchema } from '../../../interface/joi';
 import { status } from '@grpc/grpc-js';
+import { ObjectId } from 'mongodb';
 
 export const COMPARISON_OPERATORS = ['$gt', '$gte', '$lt', '$lte'] as const;
 
@@ -22,18 +23,31 @@ export const prepareFindFilter = async <T>(
             if (Object.hasOwn(validators, key)) {
                 /** CHECK VALUE **/
                 if (_value && typeof _value !== 'object') {
+                    const _key = key === 'id' ? '_id' : key;
+
                     const { error, value } = validators[key].validate(_value);
 
                     if (error) return Promise.reject(onErrorPreparedFindFilter(`${key}: ${error}`));
-                    preparedFilter[key] = value;
+
+                    preparedFilter[_key] = key === 'id' ? new ObjectId(String(value)) : value;
                 }
 
-                /** IF COMPARISON_OPERATORS CHECK **/
+                /** COMPARISON_OPERATORS CHECK **/
                 if (typeof _value === 'object') {
-                    preparedFilter[key] = {};
+                    if (Object.hasOwn(_value, '$find') && _value['$find'] !== '') {
+                        const validated = await objectHandler<T>(
+                            validators[key],
+                            _value['$find'],
+                            '$find'
+                        );
+
+                        preparedFilter[key] = {
+                            $regex: new RegExp(`${validated}`, 'i'),
+                        };
+                    }
 
                     for (const operator of COMPARISON_OPERATORS) {
-                        if (Object.hasOwn(_value, operator)) {
+                        if (Object.hasOwn(_value, operator) && _value[operator] !== '') {
                             preparedFilter[key][operator] = await objectHandler<T>(
                                 validators[key],
                                 _value[operator],
@@ -44,7 +58,6 @@ export const prepareFindFilter = async <T>(
                 }
             }
         }
-
         return preparedFilter;
     } catch (e) {
         return Promise.reject(onErrorPreparedFindFilter(e.message || ''));

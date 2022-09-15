@@ -8,11 +8,11 @@ import deleteUser from './user/deleteUser';
 import getAuth from './auth/setAuth';
 import { authenticator } from '../middleware/authenticator';
 
-import getCar from './cars/getCar';
-import deleteCar from './cars/deleteCar';
-import setCar from './cars/setCar';
-import updateCar from './cars/updateCar';
-import getAllCars from './cars/getAllCars';
+import getVehicle from './vehicle/getVehicle';
+import deleteVehicle from './vehicle/deleteVehicle';
+import setVehicle from './vehicle/setVehicle';
+import updateVehicle from './vehicle/updateVehicle';
+import getAllVehicles from './vehicle/getAllVehicles';
 
 import getAllClients from './clients/getAllClients';
 import getClient from './clients/getClient';
@@ -34,12 +34,12 @@ routes.get('/user/:id', [authUserType, authenticator, getUser]);
 
 routes.post('/user/auth', [authUserType, getAuth]);
 
-routes.get('/car/all', getAllCars);
-routes.get('/car', getAllCars);
-routes.get('/car/:id', [getCar]);
-routes.post('/car', [setCar]);
-routes.put('/car', [updateCar]);
-routes.delete('/car/:id', [deleteCar]);
+routes.get('/vehicle/all', getAllVehicles);
+routes.get('/vehicle', getAllVehicles);
+routes.get('/vehicle/:id', getVehicle);
+routes.post('/vehicle', setVehicle);
+routes.put('/vehicle', updateVehicle);
+routes.delete('/vehicle/:id', deleteVehicle);
 
 routes.get('/client/all', getAllClients);
 routes.get('/client', getAllClients);

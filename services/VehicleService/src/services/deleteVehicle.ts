@@ -1,15 +1,15 @@
 import * as grpc from '@grpc/grpc-js';
-import { DeleteCarRequest, DeleteCarResponse } from '../../../../grpc/Car/Car_pb';
 import { isDeleted, MongoDb } from '../../../../middleware/Mongodb/mongodb';
 import { ObjectId } from 'mongodb';
-import { Car } from '../../../../interface/car';
+import { Vehicle } from '../../../../interface/vehicle-interface';
 import Joi from 'joi';
 import { RegExpPatterns } from '../../../../helpers/validate';
+import { DeleteVehicleRequest, DeleteVehicleResponse } from '../../../../grpc/Vehicle/Vehicle_pb';
 
-type Call = grpc.ServerUnaryCall<DeleteCarRequest, DeleteCarResponse>;
-type Callback = grpc.sendUnaryData<DeleteCarResponse>;
+type Call = grpc.ServerUnaryCall<DeleteVehicleRequest, DeleteVehicleResponse>;
+type Callback = grpc.sendUnaryData<DeleteVehicleResponse>;
 
-export const deleteCar = (mongodb: MongoDb<Car>) => {
+export const deleteVehicle = (mongodb: MongoDb<Vehicle>) => {
     return async ({ request }: Call, callback: Callback): Promise<void> => {
         try {
             /** CHECK PARAMS FROM REQUEST **/
@@ -19,28 +19,28 @@ export const deleteCar = (mongodb: MongoDb<Car>) => {
                 .validate(request.getId());
 
             if (param_id.error) {
-                /** SEND RESPONSE_ERROR [DELETE_CAR] **/
+                /** SEND RESPONSE_ERROR [DELETE_VEHICLE] **/
                 callback({
                     code: grpc.status.INVALID_ARGUMENT,
                     message: param_id.error.message,
                 });
             } else {
-                /** DELETE CAR FROM DATABASE **/
-                const carId = new ObjectId(request.getId());
+                /** DELETE VEHICLE FROM DATABASE **/
+                const vehicleId = new ObjectId(request.getId());
                 const deleted = await isDeleted(
                     await mongodb.collection.deleteOne({
-                        _id: carId,
+                        _id: vehicleId,
                     })
                 );
 
-                /** SUCCESS RESPONSE GRPC [DELETE_CAR] */
-                const responseGRPC = new DeleteCarResponse();
+                /** SUCCESS RESPONSE GRPC [DELETE_VEHICLE] */
+                const responseGRPC = new DeleteVehicleResponse();
                 responseGRPC.setDeleted(deleted);
 
                 callback(null, responseGRPC);
             }
         } catch (e) {
-            /** SEND RESPONSE_ERROR [DELETE_CAR] **/
+            /** SEND RESPONSE_ERROR [DELETE_VEHICLE] **/
             callback({
                 code: e.code || grpc.status.INTERNAL,
                 message: e.message || 'SERVER ERROR',

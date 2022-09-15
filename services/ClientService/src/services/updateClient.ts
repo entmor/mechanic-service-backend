@@ -22,6 +22,8 @@ export const updateClient = (mongodb: MongoDb<Client>) => {
                 {
                     removeId: false,
                     removeEmptyProperties: true,
+                    excludeKeys: ['createdAt', 'updatedAt'],
+                    removeZeroValueProperties: ['taxNumber'],
                 }
             );
 

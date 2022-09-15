@@ -1,23 +1,30 @@
 import { MongoDb } from '../../../middleware/Mongodb/mongodb';
-import { Car } from '../../../interface/car';
+import { Vehicle } from '../../../interface/vehicle-interface';
 import { App } from '../src/app';
 import request from 'supertest';
 import { execSync } from 'child_process';
 
-const URL = '/v1/car';
+const URL = '/v1/vehicle';
 
 const date = new Date();
 
-const car: Car = {
+const vehicle: any = {
+    type: 'CAR',
     plate: 'PCT05755',
     mark: 'Volkswagen',
     model: 'Golf III',
     year: 2015,
     vin: 'VFKLWERT421NJFJRZ',
     clientId: '525225255225252525525252',
+    engine: {
+        enginePower: 55,
+        engineSize: 1.5,
+        engineType: 'DIESEL',
+    },
 };
 
 const instertFieldsToCheck = [
+    ['type', [4, 'fsdfsdf', ''], true],
     ['plate', ['notAcceptSpecialChar!@$%@$%', ''], true],
     ['mark', ['notAcceptSpecialChar!@$%@$%', ''], true],
     ['model', ['notAcceptSpecialChar!@$%@$%', ''], true],
@@ -45,23 +52,22 @@ const updatedFieldsToCheck = [
 
 describe(`[API ROUTER][${URL}]`, () => {
     const app = request(App);
-    let car_db: MongoDb<Car>;
+    let vehicle_db: MongoDb<Vehicle>;
 
     let insertedId = 'testId';
-    let invalidObject: Partial<Car> = {};
+    let invalidObject: Partial<Vehicle> = {};
 
     jest.setTimeout(10000);
     beforeAll(async () => {
         /** CONNECT TO MONGODB **/
-        const mongodb = new MongoDb<Car>('cars');
-        car_db = await mongodb.connection();
+        const mongodb = new MongoDb<Vehicle>('vehicle');
+        vehicle_db = await mongodb.connection();
 
         /** CLEAR COLLECTION **/
-        await car_db.collection.deleteMany({});
+        await vehicle_db.collection.deleteMany({});
 
-        console.log(process.env.FULL_TEST);
         if (process.env.FULL_TEST) {
-            execSync('docker start car-service');
+            execSync('docker start vehicle-service');
             execSync('docker start mongo');
         }
     });
@@ -71,7 +77,7 @@ describe(`[API ROUTER][${URL}]`, () => {
             'Form: Invalid fields',
             (key: string, value: Array<any>, required = false) => {
                 beforeEach(() => {
-                    invalidObject = { ...car };
+                    invalidObject = { ...vehicle };
                 });
 
                 /***
@@ -115,7 +121,7 @@ describe(`[API ROUTER][${URL}]`, () => {
         );
 
         it('should be insert car', async () => {
-            const api_response = await app.post(URL).send(car);
+            const api_response = await app.post(URL).send(vehicle);
             insertedId = api_response.body.id;
             expect(api_response.statusCode).toBe(200);
         });
@@ -132,7 +138,7 @@ describe(`[API ROUTER][${URL}]`, () => {
             'Form: Invalid fields',
             (key: string, value: Array<any>, required = false) => {
                 beforeEach(() => {
-                    invalidObject = { ...car, id: insertedId };
+                    invalidObject = { ...vehicle, id: insertedId };
                 });
 
                 /***
@@ -203,21 +209,19 @@ describe(`[API ROUTER][${URL}]`, () => {
                 execSync('docker kill mongo');
 
                 const api_response = await app.get(URL);
-                console.log(api_response.body);
                 expect(api_response.statusCode).toBe(500);
             });
 
-            it('should be 500, because car-service is stopped', async () => {
-                execSync('docker kill car-service');
+            it('should be 500, because vehicle-service is stopped', async () => {
+                execSync('docker kill vehicle-service');
 
                 const api_response = await app.get(URL);
-                console.log(api_response.body);
                 expect(api_response.statusCode).toBe(503);
             });
 
             afterAll(() => {
                 execSync('docker start mongo');
-                execSync('docker start car-service');
+                execSync('docker start vehicle-service');
             });
         });
     }

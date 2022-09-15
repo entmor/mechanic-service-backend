@@ -15,7 +15,11 @@ const CLIENT_SCHEMA: JoiSchema<ClientSchema> = {
     }),
     phone: Joi.string().pattern(RegExpPatterns.phone),
     email: Joi.string().email({ minDomainSegments: 2 }),
-    gender: Joi.string().pattern(RegExpPatterns.gender),
+    gender: Joi.when('type', {
+        is: 'personal',
+        then: Joi.string().pattern(RegExpPatterns.gender).required(),
+        otherwise: Joi.string().pattern(RegExpPatterns.gender).optional(),
+    }),
     street: Joi.string().pattern(RegExpPatterns.name),
     city: Joi.string().pattern(RegExpPatterns.name),
     zipCode: Joi.string().pattern(RegExpPatterns.zipCode),
@@ -33,7 +37,6 @@ const setClientSchema: JoiSchema<ClientSchema> = {
     name: CLIENT_SCHEMA.name.required(),
     phone: CLIENT_SCHEMA.phone.required(),
     type: CLIENT_SCHEMA.type.required(),
-    gender: CLIENT_SCHEMA.gender.required(),
 };
 
 const updateClientSchema: JoiSchema<Client> = {
