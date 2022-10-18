@@ -108,3 +108,83 @@ export namespace SetAuthResponse {
   }
 }
 
+export class DeleteAuthRequest extends jspb.Message {
+  getToken(): string;
+  setToken(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteAuthRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteAuthRequest): DeleteAuthRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteAuthRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteAuthRequest;
+  static deserializeBinaryFromReader(message: DeleteAuthRequest, reader: jspb.BinaryReader): DeleteAuthRequest;
+}
+
+export namespace DeleteAuthRequest {
+  export type AsObject = {
+    token: string,
+  }
+}
+
+export class DeleteAuthResponse extends jspb.Message {
+  getDeleted(): boolean;
+  setDeleted(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteAuthResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteAuthResponse): DeleteAuthResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteAuthResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteAuthResponse;
+  static deserializeBinaryFromReader(message: DeleteAuthResponse, reader: jspb.BinaryReader): DeleteAuthResponse;
+}
+
+export namespace DeleteAuthResponse {
+  export type AsObject = {
+    deleted: boolean,
+  }
+}
+
+export class DeleteAllAuthByIdRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteAllAuthByIdRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteAllAuthByIdRequest): DeleteAllAuthByIdRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteAllAuthByIdRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteAllAuthByIdRequest;
+  static deserializeBinaryFromReader(message: DeleteAllAuthByIdRequest, reader: jspb.BinaryReader): DeleteAllAuthByIdRequest;
+}
+
+export namespace DeleteAllAuthByIdRequest {
+  export type AsObject = {
+    id: string,
+  }
+}
+
+export class DeleteAllAuthByIdResponse extends jspb.Message {
+  getDeleted(): boolean;
+  setDeleted(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteAllAuthByIdResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteAllAuthByIdResponse): DeleteAllAuthByIdResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteAllAuthByIdResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteAllAuthByIdResponse;
+  static deserializeBinaryFromReader(message: DeleteAllAuthByIdResponse, reader: jspb.BinaryReader): DeleteAllAuthByIdResponse;
+}
+
+export namespace DeleteAllAuthByIdResponse {
+  export type AsObject = {
+    deleted: boolean,
+  }
+}
+

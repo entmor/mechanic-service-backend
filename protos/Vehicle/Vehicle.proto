@@ -2,36 +2,18 @@ syntax = "proto3";
 
 package Vehicle;
 
-message VehicleEngineSchema {
-  double engine_size = 1;
-  int32 engine_power = 2;
-  string engine_type = 3;
-}
-
-message VehicleSchema{
-  string id = 1;
-  string plate = 2;
-  string mark = 3;
-  string model = 4;
-  string vin = 5;
-  int32 year = 6;
-  string client_id = 7;
-  int64 created_at = 8;
-  int64 updated_at = 9;
-  string type = 10;
-  VehicleEngineSchema engine = 11;
-}
+import 'Schema/VehicleSchema.proto';
 
 message GetVehicleRequest{
   string id = 1;
 }
 
 message GetVehicleResponse{
-  VehicleSchema vehicle = 1;
+  Schema.VehicleSchema vehicle = 1;
 }
 
 message SetVehicleRequest{
-  VehicleSchema vehicle = 1;
+  Schema.VehicleSchema vehicle = 1;
 }
 
 message SetVehicleResponse{
@@ -39,7 +21,7 @@ message SetVehicleResponse{
 }
 
 message UpdateVehicleRequest{
-  VehicleSchema vehicle = 1;
+  Schema.VehicleSchema vehicle = 1;
 }
 
 message UpdateVehicleResponse{
@@ -51,6 +33,14 @@ message DeleteVehicleRequest{
 }
 
 message DeleteVehicleResponse{
+  bool deleted = 1;
+}
+
+message DeleteAllVehiclesByClientIdRequest{
+  string client_id = 1;
+}
+
+message DeleteAllVehiclesByClientIdResponse{
   bool deleted = 1;
 }
 
@@ -68,7 +58,7 @@ message GetAllVehiclesResponse{
   int32 per_page = 3;
   string sort = 4;
   bool is_next_page = 5;
-  repeated VehicleSchema vehicles = 6;
+  repeated Schema.VehicleSchema vehicles = 6;
 }
 
 service Vehicle{
@@ -82,5 +72,7 @@ service Vehicle{
   rpc DeleteVehicle (DeleteVehicleRequest) returns (DeleteVehicleResponse) {};
 
   rpc GetAllVehicles (GetAllVehiclesRequest) returns (GetAllVehiclesResponse) {};
+
+  rpc DeleteAllVehiclesByClientId (DeleteAllVehiclesByClientIdRequest) returns (DeleteAllVehiclesByClientIdResponse) {};
 }
 

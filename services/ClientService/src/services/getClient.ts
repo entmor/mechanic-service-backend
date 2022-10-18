@@ -15,8 +15,9 @@ type Call = grpc.ServerUnaryCall<GetClientRequest, GetClientResponse>;
 type Callback = grpc.sendUnaryData<GetClientResponse>;
 
 export const getClient = (mongodb: MongoDb<Client>) => {
-    return async ({ request }: Call, callback: Callback): Promise<void> => {
+    return async ({ request, metadata }: Call, callback: Callback): Promise<void> => {
         try {
+            console.log(metadata.get('test'));
             /** CHECK PARAMS FROM REQUEST **/
             const param_id = Joi.string()
                 .required()

@@ -1,12 +1,17 @@
 import express from 'express';
-// import compression from 'compression'; // compresses requests
-// import session from 'express-session';
+import compression from 'compression'; // compresses requests
 import bodyParser from 'body-parser';
+import helmet from 'helmet';
 
 import routes from './v1/routes';
 
 const app = express();
 
+//SECURITY
+app.disable('x-powered-by');
+app.use(helmet());
+
+app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

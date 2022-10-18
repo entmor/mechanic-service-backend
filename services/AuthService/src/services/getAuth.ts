@@ -2,22 +2,16 @@ import { Redis } from 'ioredis';
 import * as grpc from '@grpc/grpc-js';
 import { GetAuthRequest, GetAuthResponse } from '../../../../grpc/Auth/Auth_pb';
 import { verifyToken } from '../middleware/token';
-import { UserClient } from '../../../../grpc/User/User_grpc_pb';
 import { GetUserRequest } from '../../../../grpc/User/User_pb';
 import { JoiValidator } from '../../../../helpers/validate';
 import { GetLoginValidator } from '../model/validator.joi';
 import { GetAuth } from '../../../../interface/auth.interface';
+import { grpcUserClient } from '../../../grpcClients';
 
 type Call = grpc.ServerUnaryCall<GetAuthRequest, GetAuthResponse>;
 type Callback = grpc.sendUnaryData<GetAuthResponse>;
 
 export const getAuth = (redisClient: Redis) => {
-    // TODO SSL CONNECTION
-    const grpcUserClient = new UserClient(
-        `${process.env.GRPC_USER_SERVICE_URL}`,
-        grpc.credentials.createInsecure()
-    );
-
     return async ({ request }: Call, callback: Callback): Promise<void> => {
         try {
             /**
@@ -38,7 +32,7 @@ export const getAuth = (redisClient: Redis) => {
              * 2) IS STILL EXIST ON DB?
              */
             const { id } = await verifyToken(token);
-            const isTokenActive = await redisClient.get(`user:${id}:${token}`);
+            const isTokenActive = await redisClient.get(`user_token:${id}:${token}`);
 
             if (isTokenActive !== null) {
                 /**
@@ -49,7 +43,8 @@ export const getAuth = (redisClient: Redis) => {
                 grpcGetUserRequest.setId(id);
                 grpcUserClient.getUser(grpcGetUserRequest, (error, grpcUserGetResponse) => {
                     if (error) {
-                        /* SEND RESPONSE_ERROR [GET_AUTH] */
+                        /** SEND RESPONSE_ERROR [GET_AUTH] */
+                        console.log('titaj errror auth');
                         callback(error);
                     } else {
                         /**
@@ -63,20 +58,21 @@ export const getAuth = (redisClient: Redis) => {
                         grpcGetAuthResponse.setUser(grpcUserGetResponse.getUser());
 
                         callback(null, grpcGetAuthResponse);
-
-                        grpcUserClient.close();
                     }
                 });
             } else {
-                /* SEND RESPONSE_ERROR [GET_AUTH] */
+                /** SEND RESPONSE_ERROR [GET_AUTH] **/
                 callback({
                     code: grpc.status.UNAUTHENTICATED,
                     message: 'Token is not exist',
                 });
             }
         } catch (e) {
-            /* SEND RESPONSE_ERROR [GET_AUTH] */
-            callback(e);
+            /** SEND RESPONSE_ERROR [GET_AUTH] **/
+            callback({
+                code: e.code || grpc.status.INTERNAL,
+                message: e.message || 'SERVER ERROR',
+            });
         }
     };
 };

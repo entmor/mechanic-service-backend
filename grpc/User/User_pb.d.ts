@@ -6,13 +6,8 @@ import * as Schema_UserSchema_pb from "../Schema/UserSchema_pb";
 import * as Schema_AuthSchema_pb from "../Schema/AuthSchema_pb";
 
 export class GetUserRequest extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
-
-  hasAuth(): boolean;
-  clearAuth(): void;
-  getAuth(): Schema_AuthSchema_pb.AuthUser | undefined;
-  setAuth(value?: Schema_AuthSchema_pb.AuthUser): void;
+  getId(): string;
+  setId(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetUserRequest.AsObject;
@@ -26,8 +21,7 @@ export class GetUserRequest extends jspb.Message {
 
 export namespace GetUserRequest {
   export type AsObject = {
-    id: number,
-    auth?: Schema_AuthSchema_pb.AuthUser.AsObject,
+    id: string,
   }
 }
 
@@ -80,8 +74,8 @@ export namespace SetUserRequest {
 }
 
 export class SetUserResponse extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SetUserResponse.AsObject;
@@ -95,7 +89,7 @@ export class SetUserResponse extends jspb.Message {
 
 export namespace SetUserResponse {
   export type AsObject = {
-    id: number,
+    id: string,
   }
 }
 
@@ -122,10 +116,8 @@ export namespace UpdateUserRequest {
 }
 
 export class UpdateUserResponse extends jspb.Message {
-  hasUser(): boolean;
-  clearUser(): void;
-  getUser(): Schema_UserSchema_pb.UserSchema | undefined;
-  setUser(value?: Schema_UserSchema_pb.UserSchema): void;
+  getUpdated(): boolean;
+  setUpdated(value: boolean): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UpdateUserResponse.AsObject;
@@ -139,13 +131,13 @@ export class UpdateUserResponse extends jspb.Message {
 
 export namespace UpdateUserResponse {
   export type AsObject = {
-    user?: Schema_UserSchema_pb.UserSchema.AsObject,
+    updated: boolean,
   }
 }
 
 export class DeleteUserRequest extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): DeleteUserRequest.AsObject;
@@ -159,13 +151,13 @@ export class DeleteUserRequest extends jspb.Message {
 
 export namespace DeleteUserRequest {
   export type AsObject = {
-    id: number,
+    id: string,
   }
 }
 
 export class DeleteUserResponse extends jspb.Message {
-  getSuccess(): boolean;
-  setSuccess(value: boolean): void;
+  getDeleted(): boolean;
+  setDeleted(value: boolean): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): DeleteUserResponse.AsObject;
@@ -179,7 +171,7 @@ export class DeleteUserResponse extends jspb.Message {
 
 export namespace DeleteUserResponse {
   export type AsObject = {
-    success: boolean,
+    deleted: boolean,
   }
 }
 
@@ -195,6 +187,11 @@ export class GetAllUsersRequest extends jspb.Message {
 
   getOrderby(): string;
   setOrderby(value: string): void;
+
+  hasWhere(): boolean;
+  clearWhere(): void;
+  getWhere(): string;
+  setWhere(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetAllUsersRequest.AsObject;
@@ -212,6 +209,7 @@ export namespace GetAllUsersRequest {
     perPage: number,
     sort: string,
     orderby: string,
+    where: string,
   }
 }
 

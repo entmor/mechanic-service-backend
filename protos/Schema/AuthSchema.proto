@@ -3,7 +3,7 @@ syntax = "proto3";
 package Schema;
 
 message AuthUser{
-  int32 id = 1;
+  string id = 1;
   string type = 2;
   string role = 3;
 }

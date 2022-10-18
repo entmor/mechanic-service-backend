@@ -1,8 +1,8 @@
 import { Response, Request } from 'express';
-import { GetAllRequest, GetAllResponse } from '../../../../../interface/request';
-import { Vehicle } from '../../../../../interface/vehicle-interface';
+import { GetAllRequest, GetAllResponse } from '../../../../../interface/request.interface';
+import { Vehicle } from '../../../../../interface/vehicle.interface';
 import { ApiResponse, errorsHandler } from '../../errors';
-import { grpcVehicleClient } from '../../grpcClients';
+import { grpcVehicleClient } from '../../../../grpcClients';
 import { GetAllVehiclesRequest } from '../../../../../grpc/Vehicle/Vehicle_pb';
 
 type RequestApi = Request<unknown, unknown, unknown, GetAllRequest>;

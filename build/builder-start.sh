@@ -10,4 +10,4 @@ chmod +x ./build/protoc-install.sh
 chmod +x ./build/protoc-generate.sh
 
 /bin/zsh ./build/protoc-install.sh
-
+/bin/zsh ./build/protoc-generate.sh

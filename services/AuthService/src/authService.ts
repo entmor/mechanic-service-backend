@@ -3,6 +3,8 @@ import { AuthService } from '../../../grpc/Auth/Auth_grpc_pb';
 import IORedis from 'ioredis';
 import { setAuth } from './services/setAuth';
 import { getAuth } from './services/getAuth';
+import { deleteAuth } from './services/deleteAuth';
+import { deleteAuthById } from './services/deleteAuthById';
 
 // GRPC SERVER
 const server = new grpc.Server();
@@ -18,6 +20,8 @@ const redisClient = new IORedis({
 server.addService(AuthService, {
     getAuth: getAuth(redisClient),
     setAuth: setAuth(redisClient),
+    deleteAuth: deleteAuth(redisClient),
+    deleteAuthById: deleteAuthById(redisClient),
 });
 
 server.bindAsync(

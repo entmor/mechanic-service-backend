@@ -1,44 +1,48 @@
 import * as grpc from '@grpc/grpc-js';
-
-import { SequelizeInit } from '../../../middleware/Sequelize';
-import * as UserModel from './model/db.model';
-import { UserInstance } from './model/db.model';
 import { UserService } from '../../../grpc/User/User_grpc_pb';
 import { setUser } from './service/setUser';
 import messageQueue from '../../../middleware/MessageQueue/messageQueue';
-import { EmailSend } from '../../../interface/email';
+import { EmailSend } from '../../../interface/email.interface';
 import { getAllUsers } from './service/getAllUsers';
 import { deleteUser } from './service/deleteUser';
 import { getUserAuth } from './service/getUserAuth';
 import { getUser } from './service/getUser';
-
-// DATABASE
-const sequelize = new SequelizeInit<UserInstance>([UserModel]);
+import { MongoDb } from '../../../middleware/Mongodb/mongodb';
+import { User } from '../../../interface/user.interface';
+import { updateUser } from './service/updateUser';
 
 // queue
 export const queueEmailService = messageQueue.setQueue<EmailSend, any, string>({
     name: 'emailService',
 });
 
-// GRPC SERVER
-const server = new grpc.Server();
+const mongodb = new MongoDb<User>('users');
 
-server.addService(UserService, {
-    getUser: getUser(sequelize),
-    setUser: setUser(sequelize),
-    deleteUser: deleteUser(sequelize),
-    getAllUsers: getAllUsers(sequelize),
-    getUserAuth: getUserAuth(sequelize),
-});
+mongodb
+    .connection()
+    .then((db) => {
+        // GRPC SERVER
+        const server = new grpc.Server();
 
-server.bindAsync(
-    `${process.env.GRPC_USER_SERVICE_URL}`,
-    grpc.ServerCredentials.createInsecure(),
-    () => {
-        server.start();
+        server.addService(UserService, {
+            getUser: getUser(db),
+            setUser: setUser(db),
+            updateUser: updateUser(db),
+            deleteUser: deleteUser(db),
+            getAllUsers: getAllUsers(db),
+            getUserAuth: getUserAuth(db),
+        });
 
-        console.log('---------------');
-        console.log('GRPC User-Service Started');
-        console.log('---------------');
-    }
-);
+        server.bindAsync(
+            `${process.env.GRPC_USER_SERVICE_URL}`,
+            grpc.ServerCredentials.createInsecure(),
+            () => {
+                server.start();
+
+                console.log('---------------');
+                console.log('GRPC User-Service Started');
+                console.log('---------------');
+            }
+        );
+    })
+    .catch(console.error);

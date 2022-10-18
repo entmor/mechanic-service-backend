@@ -3,12 +3,14 @@ import { Redis } from 'ioredis';
 
 import { SetAuthRequest, SetAuthResponse } from '../../../../grpc/Auth/Auth_pb';
 import { UserSchema } from '../../../../grpc/Schema/UserSchema_pb';
-import { User } from '../../../../interface/user';
-import { GenderGrpc } from '../../../../interface/gender';
+import { User } from '../../../../interface/user.interface';
 import { PasswordModule } from '../../../../middleware/Pbkdf2/pbkdf2';
 import { createToken } from '../middleware/token';
 import { fromJsonToGrpc } from '../../../../helpers/grpc';
 import { userAuth } from './setAuth/userAuth';
+import { JoiValidator } from '../../../../helpers/validate';
+import { SetAuth } from '../../../../interface/auth.interface';
+import { SetLoginValidator } from '../model/validator.joi';
 
 const EXP: number = +process.env.JWT_EXP;
 
@@ -19,18 +21,24 @@ export const setAuth = (redisClient: Redis) => {
     return async ({ request }: Call, callback: Callback): Promise<void> => {
         try {
             /**
-             *  1) GET DATA FROM GRPC_REQUEST [GET_AUTH] AND VALIDATE
+             *  1) GET DATA FROM GRPC_REQUEST [SET_AUTH] AND VALIDATE
              */
-            const email = request.getEmail();
-            const password = request.getPassword();
-            //const type = request.getType();
+            const { email, password } = await JoiValidator<SetAuth, SetAuth>(
+                SetLoginValidator,
+                {
+                    email: request.getEmail(),
+                    password: request.getPassword(),
+                },
+                {
+                    removeEmptyProperties: true,
+                }
+            );
 
             /**
              * RESOLVE USER/CLIENT-DATA OR REJECT
              */
-            const user = await userAuth(email);
+            const { user, salt } = await userAuth(email);
             const hashedPassword = user.password;
-            const salt = user.salt;
 
             const isPasswordCorrect = await PasswordModule.verify(password, hashedPassword, salt);
 
@@ -53,14 +61,10 @@ export const setAuth = (redisClient: Redis) => {
                  * 2) SEND RESPONSE [SET_AUTH]
                  *
                  */
-                const userSchema = fromJsonToGrpc<UserSchema, User<GenderGrpc>>(
-                    new UserSchema(),
-                    user,
-                    {
-                        getTimeChange: true,
-                        excludeKeys: ['password', 'salt'],
-                    }
-                );
+                const userSchema = fromJsonToGrpc<UserSchema, User>(new UserSchema(), user, {
+                    excludeKeys: ['password', 'salt'],
+                });
+
                 const grpcSetAuthResponse = new SetAuthResponse();
                 grpcSetAuthResponse.setToken(jwtToken);
                 grpcSetAuthResponse.setUser(userSchema);

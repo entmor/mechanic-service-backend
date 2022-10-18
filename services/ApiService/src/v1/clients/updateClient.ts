@@ -3,7 +3,7 @@ import { ApiResponse, errorsHandler } from '../../errors';
 import { Client } from '../../../../../interface/client.interface';
 import { fromJsonToGrpc } from '../../../../../helpers/grpc';
 import { ClientSchema, UpdateClientRequest } from '../../../../../grpc/Client/Client_pb';
-import { grpcClientClient } from '../../grpcClients';
+import { grpcClientClient } from '../../../../grpcClients';
 
 type OmittedClient = Omit<Client, 'createdAt' | 'updatedAt'>;
 

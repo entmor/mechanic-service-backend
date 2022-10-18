@@ -1,18 +1,18 @@
 import * as grpc from '@grpc/grpc-js';
-import { Response, Request, NextFunction } from 'express';
-import { grpcAuthClient } from '../grpcClients';
+import { NextFunction, Request, Response } from 'express';
+import { grpcAuthClient } from '../../../grpcClients';
 import { errorsHandler } from '../errors';
-import { User } from '../../../../interface/user';
-import { GenderGrpc } from '../../../../interface/gender';
 
 import { GetAuthRequest } from '../../../../grpc/Auth/Auth_pb';
-import { AuthUser } from '../../../../grpc/Schema/AuthSchema_pb';
 import { checkToken } from '../../../../helpers/authorization';
+import { User } from '../../../../interface/user.interface';
+import { Metadata } from '@grpc/grpc-js';
+import { getToken } from './getToken';
 
-type RequestApi = Request<any, any, { token: string }, any, any>;
+type RequestApi = Request<unknown, unknown, { token: string }, unknown, unknown>;
 type ResponseApi = Response<
-    any,
-    { user: User<GenderGrpc>; token: string; type: string; authUserMessage: any }
+    unknown,
+    { user: User; token: string; type: string; authMetadata: any }
 >;
 
 const isType = async (type: string): Promise<string> => {
@@ -29,7 +29,7 @@ const isType = async (type: string): Promise<string> => {
 };
 
 export const authenticator = async (
-    { body }: RequestApi,
+    { body, headers }: RequestApi,
     responseApi: ResponseApi,
     next: NextFunction
 ) => {
@@ -37,8 +37,8 @@ export const authenticator = async (
         /**
          *  VALIDATE TOKEN FROM USER
          */
-        const token = await checkToken(body.token);
-        const type = await isType(responseApi.locals.type);
+        const token = await checkToken(await getToken(headers.authorization));
+        // const type = await isType(responseApi.locals.type);
 
         /**
          *
@@ -47,32 +47,32 @@ export const authenticator = async (
          */
         const grpcAuthRequest = new GetAuthRequest();
         grpcAuthRequest.setToken(token);
-        grpcAuthRequest.setType(type);
+        // grpcAuthRequest.setType(type);
 
         grpcAuthClient.getAuth(grpcAuthRequest, (error, grpcAuthResponse) => {
             if (error) {
-                /* SEND RESPONSE_ERROR [GET_AUTH] */
+                /** SEND RESPONSE_ERROR [GET_AUTH] */
                 const errorResponse = errorsHandler(error);
                 responseApi.status(errorResponse.http_code).json(errorResponse);
             } else {
                 const token = grpcAuthResponse.getToken();
                 const user = grpcAuthResponse.getUser().toObject();
 
-                const authGrpcMessage = new AuthUser();
-                authGrpcMessage.setType(responseApi.locals.type);
-                authGrpcMessage.setId(user.id);
-                authGrpcMessage.setRole(user.role);
+                const grpcMetadata = new Metadata();
+                grpcMetadata.add('id', user.id);
+                grpcMetadata.add('type', responseApi.locals.type);
+                grpcMetadata.add('role', user.role);
 
-                responseApi.locals.user = user;
                 responseApi.locals.token = token;
-                responseApi.locals.authUserMessage = authGrpcMessage;
+                responseApi.locals.user = user;
+                responseApi.locals.authMetadata = grpcMetadata;
                 responseApi.set('Authorization', `Bearer ${token}`);
 
                 next();
             }
         });
     } catch (error) {
-        /* SEND RESPONSE_ERROR [GET_AUTH] */
+        /** SEND RESPONSE_ERROR [GET_AUTH] */
 
         if (error !== null) {
             const errorResponse = errorsHandler(error);

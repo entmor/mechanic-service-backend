@@ -1,6 +1,6 @@
 import Joi from 'joi';
-import { Vehicle } from '../../../../interface/vehicle-interface';
-import { JoiSchema } from '../../../../interface/joi';
+import { Vehicle } from '../../../../interface/vehicle.interface';
+import { JoiSchema } from '../../../../interface/joi.interface';
 import { RegExpPatterns } from '../../../../helpers/validate';
 import { engineType, vehicleType } from '../config/vehicle.config';
 

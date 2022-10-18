@@ -1,13 +1,11 @@
 import { Request, Response } from 'express';
 import { ApiResponse, errorsHandler } from '../../errors';
-import { Vehicle, VehicleEngine } from '../../../../../interface/vehicle-interface';
+import { Vehicle, VehicleEngine } from '../../../../../interface/vehicle.interface';
 import { fromJsonToGrpc } from '../../../../../helpers/grpc';
-import { grpcVehicleClient } from '../../grpcClients';
-import {
-    SetVehicleRequest,
-    VehicleEngineSchema,
-    VehicleSchema,
-} from '../../../../../grpc/Vehicle/Vehicle_pb';
+import { grpcVehicleClient } from '../../../../grpcClients';
+import { SetVehicleRequest } from '../../../../../grpc/Vehicle/Vehicle_pb';
+import { VehicleEngineSchema } from '../../../../../grpc/Schema/VehicleEngineSchema_pb';
+import { VehicleSchema } from '../../../../../grpc/Schema/VehicleSchema_pb';
 
 type OmittedVehicle = Omit<Vehicle, 'id' | 'createdAt' | 'updatedAt'>;
 

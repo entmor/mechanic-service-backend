@@ -1,5 +1,5 @@
 import { MongoDb } from '../../../middleware/Mongodb/mongodb';
-import { Vehicle } from '../../../interface/vehicle-interface';
+import { Vehicle } from '../../../interface/vehicle.interface';
 import { App } from '../src/app';
 import request from 'supertest';
 import { execSync } from 'child_process';

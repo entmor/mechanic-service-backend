@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package Schema;
+
+import 'Schema/VehicleEngineSchema.proto';
+
+message VehicleSchema{
+  string id = 1;
+  string plate = 2;
+  string mark = 3;
+  string model = 4;
+  string vin = 5;
+  int32 year = 6;
+  string client_id = 7;
+  int64 created_at = 8;
+  int64 updated_at = 9;
+  string type = 10;
+  Schema.VehicleEngineSchema engine = 11;
+}

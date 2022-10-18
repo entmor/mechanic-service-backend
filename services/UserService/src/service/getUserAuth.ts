@@ -1,44 +1,40 @@
 import * as grpc from '@grpc/grpc-js';
 import { GetUserAuthRequest, GetUserAuthResponse } from '../../../../grpc/User/User_pb';
-import { SequelizeInit } from '../../../../middleware/Sequelize';
-import { modelName as USER_MODEL_NAME, UserInstance } from '../model/db.model';
-import { getByID } from '../../../../helpers/database';
-import { GenderGrpc } from '../../../../interface/gender';
-import { User } from '../../../../interface/user';
+import { User } from '../../../../interface/user.interface';
 import { fromJsonToGrpc } from '../../../../helpers/grpc';
 import { UserSchema } from '../../../../grpc/Schema/UserSchema_pb';
+import { isFound, MongoDb } from '../../../../middleware/Mongodb/mongodb';
 
 type Call = grpc.ServerUnaryCall<GetUserAuthRequest, GetUserAuthResponse>;
 type Callback = grpc.sendUnaryData<GetUserAuthResponse>;
 
-export const getUserAuth = (sequelize: SequelizeInit<UserInstance>) => {
-    const database = sequelize.getModel(USER_MODEL_NAME);
-
+export const getUserAuth = (mongodb: MongoDb<User>) => {
     return async ({ request }: Call, callback: Callback) => {
         try {
-            //GET FROM DATABASE
-
-            const user = await database.findOne({
-                where: { email: request.getEmail() },
-                raw: true,
-            });
-
-            //GRPC RESPONSE
-            const userSchema = fromJsonToGrpc<UserSchema, User<GenderGrpc>>(
-                new UserSchema(),
-                user,
-                {
-                    getTimeChange: true,
-                }
+            /** GET USER FROM DATABASE **/
+            const userObject = await isFound(
+                await mongodb.collection.findOne({ email: request.getEmail(), status: 'active' })
             );
-            const response = new GetUserAuthResponse();
-            response.setUser(userSchema);
-            response.setSalt(user.salt);
 
-            callback(null, response);
+            /** SUCCESS RESPONSE GRPC [GET_AUTH_USER]  */
+            if ('_id' in userObject) {
+                userObject.id = userObject._id.toString();
+            }
+
+            const userSchema = fromJsonToGrpc<UserSchema, User>(new UserSchema(), userObject);
+            const responseGRPC = new GetUserAuthResponse();
+
+            responseGRPC.setUser(userSchema);
+            responseGRPC.setSalt(userObject.salt);
+
+            callback(null, responseGRPC);
             //
         } catch (e) {
-            callback(e, null);
+            /** SEND RESPONSE_ERROR [GET_AUTH_USER] **/
+            callback({
+                code: e.code || grpc.status.INTERNAL,
+                message: e.message || 'SERVER ERROR',
+            });
         }
     };
 };

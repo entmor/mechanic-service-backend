@@ -1,45 +1,48 @@
 import { Request, Response } from 'express';
 import { ApiResponse, errorsHandler } from '../../errors';
 import { DeleteUserRequest } from '../../../../../grpc/User/User_pb';
-import { grpcUserClient } from '../../grpcClients';
+import { grpcUserClient } from '../../../../grpcClients';
+import Joi from 'joi';
+import { RegExpPatterns } from '../../../../../helpers/validate';
 
-type RequestApi = Request<{ id: number }>;
-type ResponseApi = Response<{ success: boolean } | ApiResponse>;
+type RequestApi = Request<{ id: string }>;
+type ResponseApi = Response<{ deleted: boolean } | ApiResponse>;
 
-export default function ({ params }: RequestApi, responseApi: ResponseApi) {
-    const ID = +params.id;
-
+export default function (requestApi: RequestApi, responseApi: ResponseApi) {
     try {
-        if (ID > 0) {
-            const deleteRequest = new DeleteUserRequest();
+        /** CHECK PARAMS FROM REQUEST **/
+        const param_id = Joi.string()
+            .required()
+            .pattern(RegExpPatterns.mongoId)
+            .validate(requestApi.params.id);
 
-            deleteRequest.setId(ID);
+        if (param_id.error) {
+            /** ERROR GRPC_REQUEST HANDLER [DELETE_USER] **/
+            responseApi.status(400).json({
+                code: 3,
+                http_code: 400,
+                message: 'WRONG ID',
+            });
+        } else {
+            /** MAKE GRPC_REQUEST [DELETE_USER] **/
+            const requestGRPC = new DeleteUserRequest();
+            requestGRPC.setId(param_id.value);
 
-            /*
-              GRPC REQUEST
-           */
-
-            grpcUserClient.deleteUser(deleteRequest, (error, grpcResponse): void => {
+            grpcUserClient.deleteUser(requestGRPC, (error, grpcResponse): void => {
                 if (error) {
+                    /** ERROR GRPC_REQUEST HANDLER [DELETE_USER] **/
                     const errorResponse = errorsHandler(error);
-
-                    console.log(errorResponse);
 
                     responseApi.status(errorResponse.http_code).json(errorResponse);
                 } else {
                     responseApi.status(200).json({
-                        success: grpcResponse.getSuccess(),
+                        deleted: grpcResponse.getDeleted(),
                     });
                 }
             });
-        } else {
-            responseApi.status(400).json({
-                code: 3,
-                http_code: 400,
-                message: 'ID must be a integer',
-            });
         }
     } catch (e) {
+        /** ERROR GRPC_REQUEST HANDLER [DELETE_USER] **/
         responseApi.status(500).json({
             code: 13,
             http_code: 500,

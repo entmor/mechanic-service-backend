@@ -1,16 +1,13 @@
 import * as grpc from '@grpc/grpc-js';
 import { isFound, MongoDb } from '../../../../middleware/Mongodb/mongodb';
 import { fromJsonToGrpc } from '../../../../helpers/grpc';
-import { Vehicle } from '../../../../interface/vehicle-interface';
+import { Vehicle } from '../../../../interface/vehicle.interface';
 import { ObjectId } from 'mongodb';
 import Joi from 'joi';
 import { RegExpPatterns } from '../../../../helpers/validate';
-import {
-    GetVehicleRequest,
-    GetVehicleResponse,
-    VehicleEngineSchema,
-    VehicleSchema,
-} from '../../../../grpc/Vehicle/Vehicle_pb';
+import { GetVehicleRequest, GetVehicleResponse } from '../../../../grpc/Vehicle/Vehicle_pb';
+import { VehicleEngineSchema } from '../../../../grpc/Schema/VehicleEngineSchema_pb';
+import { VehicleSchema } from '../../../../grpc/Schema/VehicleSchema_pb';
 
 type Call = grpc.ServerUnaryCall<GetVehicleRequest, GetVehicleResponse>;
 type Callback = grpc.sendUnaryData<GetVehicleResponse>;
@@ -48,13 +45,12 @@ export const getVehicle = (mongodb: MongoDb<Vehicle>) => {
                     }
                 );
 
-                if(vehicleObject.engine){
+                if (vehicleObject.engine) {
                     const vehicleEngine = fromJsonToGrpc<VehicleEngineSchema, Vehicle>(
                         new VehicleEngineSchema(),
                         vehicleObject.engine
                     );
                     vehicleSchema.setEngine(vehicleEngine);
-
                 }
 
                 const responseGRPC = new GetVehicleResponse();

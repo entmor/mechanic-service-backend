@@ -6,9 +6,7 @@ import 'Schema/AuthSchema.proto';
 package User;
 
 message GetUserRequest{
-  int32 id = 1;
-  Schema.AuthUser auth = 2;
-
+  string id = 1;
 }
 
 message GetUserResponse{
@@ -21,7 +19,7 @@ message SetUserRequest{
 }
 
 message SetUserResponse{
-  int32 id = 1;
+  string id = 1;
 }
 
 message UpdateUserRequest{
@@ -29,15 +27,15 @@ message UpdateUserRequest{
 }
 
 message UpdateUserResponse{
-  Schema.UserSchema user = 1;
+  bool updated = 1;
 }
 
 message DeleteUserRequest{
-  int32 id = 1;
+  string id = 1;
 }
 
 message DeleteUserResponse{
-  bool success = 1;
+  bool deleted = 1;
 
 }
 
@@ -46,6 +44,7 @@ message GetAllUsersRequest{
   int32 per_page = 2;
   string sort = 3;
   string orderby = 4;
+  optional string where = 5;
 }
 
 message GetAllUsersResponse{

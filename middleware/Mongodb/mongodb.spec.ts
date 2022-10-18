@@ -1,5 +1,5 @@
 import { COMPARISON_OPERATORS, prepareFindFilter, FilterObject } from './lib/prepareFindFilter';
-import { JoiSchema } from '../../interface/joi';
+import { JoiSchema } from '../../interface/joi.interface';
 import Joi from 'joi';
 import { isDeleted, isFound, isNextPage, isUpdated, prepareFindOptions } from './mongodb';
 import {

@@ -4,8 +4,8 @@
 import * as jspb from "google-protobuf";
 
 export class UserSchema extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   getFirstname(): string;
   setFirstname(value: string): void;
@@ -25,27 +25,6 @@ export class UserSchema extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
-  getGender(): GenderMap[keyof GenderMap];
-  setGender(value: GenderMap[keyof GenderMap]): void;
-
-  getPhone(): string;
-  setPhone(value: string): void;
-
-  getStreet(): string;
-  setStreet(value: string): void;
-
-  getCity(): string;
-  setCity(value: string): void;
-
-  getZipCode(): string;
-  setZipCode(value: string): void;
-
-  getCountry(): string;
-  setCountry(value: string): void;
-
-  getBirthday(): string;
-  setBirthday(value: string): void;
-
   getCreatedAt(): number;
   setCreatedAt(value: number): void;
 
@@ -64,31 +43,15 @@ export class UserSchema extends jspb.Message {
 
 export namespace UserSchema {
   export type AsObject = {
-    id: number,
+    id: string,
     firstname: string,
     lastname: string,
     email: string,
     password: string,
     role: string,
     status: string,
-    gender: GenderMap[keyof GenderMap],
-    phone: string,
-    street: string,
-    city: string,
-    zipCode: string,
-    country: string,
-    birthday: string,
     createdAt: number,
     updatedAt: number,
   }
 }
-
-export interface GenderMap {
-  GENDER_UNKNOWN: 0;
-  GENDER_MALE: 1;
-  GENDER_FEMALE: 2;
-  GENDER_DIVERS: 3;
-}
-
-export const Gender: GenderMap;
 

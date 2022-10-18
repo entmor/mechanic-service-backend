@@ -3,6 +3,29 @@
 'use strict';
 var grpc = require('@grpc/grpc-js');
 var Vehicle_Vehicle_pb = require('../Vehicle/Vehicle_pb.js');
+var Schema_VehicleSchema_pb = require('../Schema/VehicleSchema_pb.js');
+
+function serialize_Vehicle_DeleteAllVehiclesByClientIdRequest(arg) {
+  if (!(arg instanceof Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdRequest)) {
+    throw new Error('Expected argument of type Vehicle.DeleteAllVehiclesByClientIdRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_Vehicle_DeleteAllVehiclesByClientIdRequest(buffer_arg) {
+  return Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_Vehicle_DeleteAllVehiclesByClientIdResponse(arg) {
+  if (!(arg instanceof Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdResponse)) {
+    throw new Error('Expected argument of type Vehicle.DeleteAllVehiclesByClientIdResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_Vehicle_DeleteAllVehiclesByClientIdResponse(buffer_arg) {
+  return Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
 
 function serialize_Vehicle_DeleteVehicleRequest(arg) {
   if (!(arg instanceof Vehicle_Vehicle_pb.DeleteVehicleRequest)) {
@@ -171,6 +194,17 @@ getVehicle: {
     requestDeserialize: deserialize_Vehicle_GetAllVehiclesRequest,
     responseSerialize: serialize_Vehicle_GetAllVehiclesResponse,
     responseDeserialize: deserialize_Vehicle_GetAllVehiclesResponse,
+  },
+  deleteAllVehiclesByClientId: {
+    path: '/Vehicle.Vehicle/DeleteAllVehiclesByClientId',
+    requestStream: false,
+    responseStream: false,
+    requestType: Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdRequest,
+    responseType: Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdResponse,
+    requestSerialize: serialize_Vehicle_DeleteAllVehiclesByClientIdRequest,
+    requestDeserialize: deserialize_Vehicle_DeleteAllVehiclesByClientIdRequest,
+    responseSerialize: serialize_Vehicle_DeleteAllVehiclesByClientIdResponse,
+    responseDeserialize: deserialize_Vehicle_DeleteAllVehiclesByClientIdResponse,
   },
 };
 

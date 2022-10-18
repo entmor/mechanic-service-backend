@@ -6,14 +6,11 @@ import {
     prepareFindOptions,
 } from '../../../../middleware/Mongodb/mongodb';
 import { fromJsonToGrpc } from '../../../../helpers/grpc';
-import { Vehicle } from '../../../../interface/vehicle-interface';
+import { Vehicle } from '../../../../interface/vehicle.interface';
 import { FindVehicleFilterValidator } from '../models/vehicle.joi-schema';
-import {
-    GetAllVehiclesRequest,
-    GetAllVehiclesResponse,
-    VehicleEngineSchema,
-    VehicleSchema,
-} from '../../../../grpc/Vehicle/Vehicle_pb';
+import { GetAllVehiclesRequest, GetAllVehiclesResponse } from '../../../../grpc/Vehicle/Vehicle_pb';
+import { VehicleEngineSchema } from '../../../../grpc/Schema/VehicleEngineSchema_pb';
+import { VehicleSchema } from '../../../../grpc/Schema/VehicleSchema_pb';
 
 type Call = grpc.ServerUnaryCall<GetAllVehiclesRequest, GetAllVehiclesResponse>;
 type Callback = grpc.sendUnaryData<GetAllVehiclesResponse>;
@@ -34,7 +31,6 @@ export const getAllVehicles = (mongodb: MongoDb<Vehicle>) => {
                 sort: request.getSort(),
                 orderby: request.getOrderby(),
             });
-
 
             /** GET ALL VEHICLES FROM DATABASE **/
             const countVehiclesQuery = mongodb.collection.countDocuments(preparedWhere);

@@ -8,12 +8,12 @@
     "ts-node-dev": "ts-node-dev",
     "test": "./node_modules/.bin/env-cmd -r ./build/environments/.env-cmdrc -e default jest --verbose --watchAll --detectOpenHandles",
     "test-full": "./node_modules/.bin/env-cmd -r ./build/environments/.env-cmdrc -e default,test-full jest --verbose --watchAll --detectOpenHandles"
-
   },
   "author": "ENTMOR",
   "license": "ISC",
   "devDependencies": {
     "@shelf/jest-mongodb": "^4.0.0",
+    "@types/compression": "^1.7.2",
     "@types/express": "^4.17.13",
     "@types/google-protobuf": "^3.15.6",
     "@types/ioredis": "^4.28.10",
@@ -43,9 +43,11 @@
     "@grpc/grpc-js": "^1.6.8",
     "body-parser": "^1.20.0",
     "bullmq": "^1.59.4",
+    "compression": "^1.7.4",
     "express": "^4.18.0",
     "grpc_tools_node_protoc_ts": "^5.3.2",
     "grpc-tools": "^1.11.2",
+    "helmet": "^6.0.0",
     "ioredis": "^4.28.2",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
