@@ -8,7 +8,10 @@ const optionsToken: SignOptions = {
     expiresIn: 60 * EXP,
 };
 
-export const createToken = async (data: any, options: SignOptions = optionsToken): Promise<string> => {
+export const createToken = async (
+    data: any,
+    options: SignOptions = optionsToken
+): Promise<string> => {
     return new Promise((resolve, reject) => {
         try {
             jwt.sign(data, JWT_SECRET, options, (err, token) => {

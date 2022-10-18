@@ -1,5 +1,5 @@
-export const backendRole = ['admin', 'course-cash', 'course-edit'];
+export const backendRole = ['admin', 'mechanic'];
 
-export const backendStatus = ['active', 'pending', 'banned', 'removed'];
+export const backendStatus = ['active', 'pending'];
 
 export const systemEmail = 'kontakt@entmor.pl';

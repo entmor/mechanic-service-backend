@@ -2,96 +2,7 @@
 // file: Vehicle/Vehicle.proto
 
 import * as jspb from "google-protobuf";
-
-export class VehicleEngineSchema extends jspb.Message {
-  getEngineSize(): number;
-  setEngineSize(value: number): void;
-
-  getEnginePower(): number;
-  setEnginePower(value: number): void;
-
-  getEngineType(): string;
-  setEngineType(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): VehicleEngineSchema.AsObject;
-  static toObject(includeInstance: boolean, msg: VehicleEngineSchema): VehicleEngineSchema.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: VehicleEngineSchema, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): VehicleEngineSchema;
-  static deserializeBinaryFromReader(message: VehicleEngineSchema, reader: jspb.BinaryReader): VehicleEngineSchema;
-}
-
-export namespace VehicleEngineSchema {
-  export type AsObject = {
-    engineSize: number,
-    enginePower: number,
-    engineType: string,
-  }
-}
-
-export class VehicleSchema extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  getPlate(): string;
-  setPlate(value: string): void;
-
-  getMark(): string;
-  setMark(value: string): void;
-
-  getModel(): string;
-  setModel(value: string): void;
-
-  getVin(): string;
-  setVin(value: string): void;
-
-  getYear(): number;
-  setYear(value: number): void;
-
-  getClientId(): string;
-  setClientId(value: string): void;
-
-  getCreatedAt(): number;
-  setCreatedAt(value: number): void;
-
-  getUpdatedAt(): number;
-  setUpdatedAt(value: number): void;
-
-  getType(): string;
-  setType(value: string): void;
-
-  hasEngine(): boolean;
-  clearEngine(): void;
-  getEngine(): VehicleEngineSchema | undefined;
-  setEngine(value?: VehicleEngineSchema): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): VehicleSchema.AsObject;
-  static toObject(includeInstance: boolean, msg: VehicleSchema): VehicleSchema.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: VehicleSchema, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): VehicleSchema;
-  static deserializeBinaryFromReader(message: VehicleSchema, reader: jspb.BinaryReader): VehicleSchema;
-}
-
-export namespace VehicleSchema {
-  export type AsObject = {
-    id: string,
-    plate: string,
-    mark: string,
-    model: string,
-    vin: string,
-    year: number,
-    clientId: string,
-    createdAt: number,
-    updatedAt: number,
-    type: string,
-    engine?: VehicleEngineSchema.AsObject,
-  }
-}
+import * as Schema_VehicleSchema_pb from "../Schema/VehicleSchema_pb";
 
 export class GetVehicleRequest extends jspb.Message {
   getId(): string;
@@ -116,8 +27,8 @@ export namespace GetVehicleRequest {
 export class GetVehicleResponse extends jspb.Message {
   hasVehicle(): boolean;
   clearVehicle(): void;
-  getVehicle(): VehicleSchema | undefined;
-  setVehicle(value?: VehicleSchema): void;
+  getVehicle(): Schema_VehicleSchema_pb.VehicleSchema | undefined;
+  setVehicle(value?: Schema_VehicleSchema_pb.VehicleSchema): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetVehicleResponse.AsObject;
@@ -131,15 +42,15 @@ export class GetVehicleResponse extends jspb.Message {
 
 export namespace GetVehicleResponse {
   export type AsObject = {
-    vehicle?: VehicleSchema.AsObject,
+    vehicle?: Schema_VehicleSchema_pb.VehicleSchema.AsObject,
   }
 }
 
 export class SetVehicleRequest extends jspb.Message {
   hasVehicle(): boolean;
   clearVehicle(): void;
-  getVehicle(): VehicleSchema | undefined;
-  setVehicle(value?: VehicleSchema): void;
+  getVehicle(): Schema_VehicleSchema_pb.VehicleSchema | undefined;
+  setVehicle(value?: Schema_VehicleSchema_pb.VehicleSchema): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SetVehicleRequest.AsObject;
@@ -153,7 +64,7 @@ export class SetVehicleRequest extends jspb.Message {
 
 export namespace SetVehicleRequest {
   export type AsObject = {
-    vehicle?: VehicleSchema.AsObject,
+    vehicle?: Schema_VehicleSchema_pb.VehicleSchema.AsObject,
   }
 }
 
@@ -180,8 +91,8 @@ export namespace SetVehicleResponse {
 export class UpdateVehicleRequest extends jspb.Message {
   hasVehicle(): boolean;
   clearVehicle(): void;
-  getVehicle(): VehicleSchema | undefined;
-  setVehicle(value?: VehicleSchema): void;
+  getVehicle(): Schema_VehicleSchema_pb.VehicleSchema | undefined;
+  setVehicle(value?: Schema_VehicleSchema_pb.VehicleSchema): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UpdateVehicleRequest.AsObject;
@@ -195,7 +106,7 @@ export class UpdateVehicleRequest extends jspb.Message {
 
 export namespace UpdateVehicleRequest {
   export type AsObject = {
-    vehicle?: VehicleSchema.AsObject,
+    vehicle?: Schema_VehicleSchema_pb.VehicleSchema.AsObject,
   }
 }
 
@@ -259,6 +170,46 @@ export namespace DeleteVehicleResponse {
   }
 }
 
+export class DeleteAllVehiclesByClientIdRequest extends jspb.Message {
+  getClientId(): string;
+  setClientId(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteAllVehiclesByClientIdRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteAllVehiclesByClientIdRequest): DeleteAllVehiclesByClientIdRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteAllVehiclesByClientIdRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteAllVehiclesByClientIdRequest;
+  static deserializeBinaryFromReader(message: DeleteAllVehiclesByClientIdRequest, reader: jspb.BinaryReader): DeleteAllVehiclesByClientIdRequest;
+}
+
+export namespace DeleteAllVehiclesByClientIdRequest {
+  export type AsObject = {
+    clientId: string,
+  }
+}
+
+export class DeleteAllVehiclesByClientIdResponse extends jspb.Message {
+  getDeleted(): boolean;
+  setDeleted(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteAllVehiclesByClientIdResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteAllVehiclesByClientIdResponse): DeleteAllVehiclesByClientIdResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteAllVehiclesByClientIdResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteAllVehiclesByClientIdResponse;
+  static deserializeBinaryFromReader(message: DeleteAllVehiclesByClientIdResponse, reader: jspb.BinaryReader): DeleteAllVehiclesByClientIdResponse;
+}
+
+export namespace DeleteAllVehiclesByClientIdResponse {
+  export type AsObject = {
+    deleted: boolean,
+  }
+}
+
 export class GetAllVehiclesRequest extends jspb.Message {
   getPage(): number;
   setPage(value: number): void;
@@ -314,9 +265,9 @@ export class GetAllVehiclesResponse extends jspb.Message {
   setIsNextPage(value: boolean): void;
 
   clearVehiclesList(): void;
-  getVehiclesList(): Array<VehicleSchema>;
-  setVehiclesList(value: Array<VehicleSchema>): void;
-  addVehicles(value?: VehicleSchema, index?: number): VehicleSchema;
+  getVehiclesList(): Array<Schema_VehicleSchema_pb.VehicleSchema>;
+  setVehiclesList(value: Array<Schema_VehicleSchema_pb.VehicleSchema>): void;
+  addVehicles(value?: Schema_VehicleSchema_pb.VehicleSchema, index?: number): Schema_VehicleSchema_pb.VehicleSchema;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetAllVehiclesResponse.AsObject;
@@ -335,7 +286,7 @@ export namespace GetAllVehiclesResponse {
     perPage: number,
     sort: string,
     isNextPage: boolean,
-    vehiclesList: Array<VehicleSchema.AsObject>,
+    vehiclesList: Array<Schema_VehicleSchema_pb.VehicleSchema.AsObject>,
   }
 }
 

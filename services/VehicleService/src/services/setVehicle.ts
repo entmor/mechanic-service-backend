@@ -1,6 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import { MongoDb } from '../../../../middleware/Mongodb/mongodb';
-import { Vehicle } from '../../../../interface/vehicle-interface';
+import { Vehicle } from '../../../../interface/vehicle.interface';
 import { JoiValidator } from '../../../../helpers/validate';
 import { SetVehicleValidator } from '../models/vehicle.joi-schema';
 import { SetVehicleRequest, SetVehicleResponse } from '../../../../grpc/Vehicle/Vehicle_pb';

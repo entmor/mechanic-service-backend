@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import { RegExpPatterns } from '../../../../helpers/validate';
 import { Client } from '../../../../interface/client.interface';
-import { JoiSchema } from '../../../../interface/joi';
+import { JoiSchema } from '../../../../interface/joi.interface';
 
 type ClientSchema = Omit<Client, 'id'>;
 

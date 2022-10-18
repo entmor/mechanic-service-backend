@@ -3,7 +3,7 @@ import { ApiResponse, errorsHandler } from '../../errors';
 import { Client } from '../../../../../interface/client.interface';
 import { fromJsonToGrpc } from '../../../../../helpers/grpc';
 import { ClientSchema, SetClientRequest } from '../../../../../grpc/Client/Client_pb';
-import {grpcClientClient} from "../../grpcClients";
+import { grpcClientClient } from '../../../../grpcClients';
 
 type OmittedClient = Omit<Client, 'id' | 'createdAt' | 'updatedAt'>;
 
@@ -35,6 +35,7 @@ export default function ({ body }: RequestApi, responseApi: ResponseApi) {
             }
         });
     } catch (error) {
+        /** ERROR GRPC_REQUEST HANDLER [SET_CLIENT] **/
         const errorResponse = errorsHandler(error);
 
         responseApi.status(errorResponse.http_code).json(errorResponse);

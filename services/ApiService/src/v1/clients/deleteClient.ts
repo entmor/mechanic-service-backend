@@ -3,7 +3,7 @@ import { ApiResponse, errorsHandler } from '../../errors';
 import Joi from 'joi';
 import { RegExpPatterns } from '../../../../../helpers/validate';
 import { DeleteClientRequest } from '../../../../../grpc/Client/Client_pb';
-import { grpcClientClient } from '../../grpcClients';
+import { grpcClientClient } from '../../../../grpcClients';
 
 type RequestApi = Request<{ id: number }>;
 type ResponseApi = Response<{ deleted: boolean } | ApiResponse>;

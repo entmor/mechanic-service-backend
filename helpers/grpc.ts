@@ -18,7 +18,6 @@ const changeDateToTime = (date: Date): number => {
     return time.getTime();
 };
 
-// TODO CHECK TYPESCRIPT ANY
 export const fromJsonToGrpc = <S, T>(schema: S | any, body: T | any, options?: Option): S => {
     // SET OPTIONS
     options = {

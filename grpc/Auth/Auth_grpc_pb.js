@@ -5,6 +5,50 @@ var grpc = require('@grpc/grpc-js');
 var Auth_Auth_pb = require('../Auth/Auth_pb.js');
 var Schema_UserSchema_pb = require('../Schema/UserSchema_pb.js');
 
+function serialize_Auth_DeleteAllAuthByIdRequest(arg) {
+  if (!(arg instanceof Auth_Auth_pb.DeleteAllAuthByIdRequest)) {
+    throw new Error('Expected argument of type Auth.DeleteAllAuthByIdRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_Auth_DeleteAllAuthByIdRequest(buffer_arg) {
+  return Auth_Auth_pb.DeleteAllAuthByIdRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_Auth_DeleteAllAuthByIdResponse(arg) {
+  if (!(arg instanceof Auth_Auth_pb.DeleteAllAuthByIdResponse)) {
+    throw new Error('Expected argument of type Auth.DeleteAllAuthByIdResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_Auth_DeleteAllAuthByIdResponse(buffer_arg) {
+  return Auth_Auth_pb.DeleteAllAuthByIdResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_Auth_DeleteAuthRequest(arg) {
+  if (!(arg instanceof Auth_Auth_pb.DeleteAuthRequest)) {
+    throw new Error('Expected argument of type Auth.DeleteAuthRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_Auth_DeleteAuthRequest(buffer_arg) {
+  return Auth_Auth_pb.DeleteAuthRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_Auth_DeleteAuthResponse(arg) {
+  if (!(arg instanceof Auth_Auth_pb.DeleteAuthResponse)) {
+    throw new Error('Expected argument of type Auth.DeleteAuthResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_Auth_DeleteAuthResponse(buffer_arg) {
+  return Auth_Auth_pb.DeleteAuthResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_Auth_GetAuthRequest(arg) {
   if (!(arg instanceof Auth_Auth_pb.GetAuthRequest)) {
     throw new Error('Expected argument of type Auth.GetAuthRequest');
@@ -73,6 +117,28 @@ getAuth: {
     requestDeserialize: deserialize_Auth_SetAuthRequest,
     responseSerialize: serialize_Auth_SetAuthResponse,
     responseDeserialize: deserialize_Auth_SetAuthResponse,
+  },
+  deleteAuth: {
+    path: '/Auth.Auth/DeleteAuth',
+    requestStream: false,
+    responseStream: false,
+    requestType: Auth_Auth_pb.DeleteAuthRequest,
+    responseType: Auth_Auth_pb.DeleteAuthResponse,
+    requestSerialize: serialize_Auth_DeleteAuthRequest,
+    requestDeserialize: deserialize_Auth_DeleteAuthRequest,
+    responseSerialize: serialize_Auth_DeleteAuthResponse,
+    responseDeserialize: deserialize_Auth_DeleteAuthResponse,
+  },
+  deleteAuthById: {
+    path: '/Auth.Auth/DeleteAuthById',
+    requestStream: false,
+    responseStream: false,
+    requestType: Auth_Auth_pb.DeleteAllAuthByIdRequest,
+    responseType: Auth_Auth_pb.DeleteAllAuthByIdResponse,
+    requestSerialize: serialize_Auth_DeleteAllAuthByIdRequest,
+    requestDeserialize: deserialize_Auth_DeleteAllAuthByIdRequest,
+    responseSerialize: serialize_Auth_DeleteAllAuthByIdResponse,
+    responseDeserialize: deserialize_Auth_DeleteAllAuthByIdResponse,
   },
 };
 

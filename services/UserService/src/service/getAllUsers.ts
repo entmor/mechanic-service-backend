@@ -1,52 +1,75 @@
 import * as grpc from '@grpc/grpc-js';
-
-import { SequelizeInit } from '../../../../middleware/Sequelize';
 import { GetAllUsersRequest, GetAllUsersResponse } from '../../../../grpc/User/User_pb';
-import { modelName as USER_MODEL_NAME, UserInstance } from '../model/db.model';
-import { getAllWithLimit } from '../../../../helpers/database';
-import { GetAllResponse } from '../../../../interface/request';
-import { User } from '../../../../interface/user';
-import { GenderGrpc } from '../../../../interface/gender';
+import { User } from '../../../../interface/user.interface';
 import { fromJsonToGrpc } from '../../../../helpers/grpc';
 import { UserSchema } from '../../../../grpc/Schema/UserSchema_pb';
+import {
+    isNextPage,
+    MongoDb,
+    prepareFindFilter,
+    prepareFindOptions,
+} from '../../../../middleware/Mongodb/mongodb';
+import { FindUsersFilter } from '../model/user.joi-schema';
 
 type Call = grpc.ServerUnaryCall<GetAllUsersRequest, GetAllUsersResponse>;
 type Callback = grpc.sendUnaryData<GetAllUsersResponse>;
 
-export const getAllUsers = (sequelize: SequelizeInit<UserInstance>) => {
-    const database = sequelize.getModel(USER_MODEL_NAME);
-
+export const getAllUsers = (mongodb: MongoDb<User>) => {
     return async ({ request }: Call, callback: Callback): Promise<void> => {
         try {
-            const response = new GetAllUsersResponse();
+            /**  PREPARE DATA FROM GRPC **/
+            const where = request.hasWhere() ? JSON.parse(request.getWhere()) : {};
+            const preparedWhere = await prepareFindFilter<User>(FindUsersFilter, where);
 
-            const { count, page, per_page, sort, isNextPage, data } = await getAllWithLimit<
-                UserInstance,
-                GetAllResponse<User<GenderGrpc>>
-            >(database, {
-                page: request.getPage(),
-                per_page: request.getPerPage(),
+            const preparedFindOptions = prepareFindOptions({
+                per_page: +request.getPerPage(),
+                page: +request.getPage(),
                 sort: request.getSort(),
+                orderby: request.getOrderby(),
             });
 
-            response.setCount(count);
-            response.setPage(page);
-            response.setPerPage(per_page);
-            response.setSort(sort);
-            response.setIsNextPage(isNextPage);
+            /** GET ALL USERS FROM DATABASE **/
+            const countUsersQuery = mongodb.collection.countDocuments(preparedWhere);
+            const getUsersQuery = mongodb.collection
+                .find(preparedWhere, preparedFindOptions.findOptions)
+                .toArray();
 
-            data.forEach((object: User<GenderGrpc>) => {
-                response.addUsers(
-                    fromJsonToGrpc<UserSchema, User<GenderGrpc>>(new UserSchema(), object, {
-                        getTimeChange: true,
+            const [countUsers, UsersArray] = await Promise.all([countUsersQuery, getUsersQuery]);
+
+            const _isNextPage = isNextPage(
+                preparedFindOptions.findOptions.limit,
+                preparedFindOptions.query.page,
+                +countUsers
+            );
+
+            /** SUCCESS RESPONSE GRPC [GET_ALL_USERS]  */
+
+            const responseGRPC = new GetAllUsersResponse();
+
+            responseGRPC.setCount(+countUsers);
+            responseGRPC.setPage(+preparedFindOptions.query.page);
+            responseGRPC.setPerPage(+preparedFindOptions.findOptions.limit);
+            responseGRPC.setSort(preparedFindOptions.query.sort);
+            responseGRPC.setIsNextPage(_isNextPage);
+
+            UsersArray.forEach((user) => {
+                if ('_id' in user) {
+                    user.id = user._id.toString();
+                }
+                responseGRPC.addUsers(
+                    fromJsonToGrpc<UserSchema, User>(new UserSchema(), user, {
                         excludeKeys: ['salt', 'password'],
                     })
                 );
             });
 
-            callback(null, response);
+            callback(null, responseGRPC);
         } catch (e) {
-            callback(e, null);
+            /** SEND RESPONSE_ERROR [GET_ALL_USERS] **/
+            callback({
+                code: e.code || grpc.status.INTERNAL,
+                message: e.message || 'SERVER ERROR',
+            });
         }
     };
 };

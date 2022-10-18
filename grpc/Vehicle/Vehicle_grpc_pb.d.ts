@@ -12,6 +12,7 @@ interface IVehicleService extends grpc.ServiceDefinition<grpc.UntypedServiceImpl
   updateVehicle: grpc.MethodDefinition<Vehicle_Vehicle_pb.UpdateVehicleRequest, Vehicle_Vehicle_pb.UpdateVehicleResponse>;
   deleteVehicle: grpc.MethodDefinition<Vehicle_Vehicle_pb.DeleteVehicleRequest, Vehicle_Vehicle_pb.DeleteVehicleResponse>;
   getAllVehicles: grpc.MethodDefinition<Vehicle_Vehicle_pb.GetAllVehiclesRequest, Vehicle_Vehicle_pb.GetAllVehiclesResponse>;
+  deleteAllVehiclesByClientId: grpc.MethodDefinition<Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdRequest, Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdResponse>;
 }
 
 export const VehicleService: IVehicleService;
@@ -22,6 +23,7 @@ export interface IVehicleServer extends grpc.UntypedServiceImplementation {
   updateVehicle: grpc.handleUnaryCall<Vehicle_Vehicle_pb.UpdateVehicleRequest, Vehicle_Vehicle_pb.UpdateVehicleResponse>;
   deleteVehicle: grpc.handleUnaryCall<Vehicle_Vehicle_pb.DeleteVehicleRequest, Vehicle_Vehicle_pb.DeleteVehicleResponse>;
   getAllVehicles: grpc.handleUnaryCall<Vehicle_Vehicle_pb.GetAllVehiclesRequest, Vehicle_Vehicle_pb.GetAllVehiclesResponse>;
+  deleteAllVehiclesByClientId: grpc.handleUnaryCall<Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdRequest, Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdResponse>;
 }
 
 export class VehicleClient extends grpc.Client {
@@ -41,4 +43,7 @@ export class VehicleClient extends grpc.Client {
   getAllVehicles(argument: Vehicle_Vehicle_pb.GetAllVehiclesRequest, callback: grpc.requestCallback<Vehicle_Vehicle_pb.GetAllVehiclesResponse>): grpc.ClientUnaryCall;
   getAllVehicles(argument: Vehicle_Vehicle_pb.GetAllVehiclesRequest, metadataOrOptions: grpc.Metadata | grpc.CallOptions | null, callback: grpc.requestCallback<Vehicle_Vehicle_pb.GetAllVehiclesResponse>): grpc.ClientUnaryCall;
   getAllVehicles(argument: Vehicle_Vehicle_pb.GetAllVehiclesRequest, metadata: grpc.Metadata | null, options: grpc.CallOptions | null, callback: grpc.requestCallback<Vehicle_Vehicle_pb.GetAllVehiclesResponse>): grpc.ClientUnaryCall;
+  deleteAllVehiclesByClientId(argument: Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdRequest, callback: grpc.requestCallback<Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdResponse>): grpc.ClientUnaryCall;
+  deleteAllVehiclesByClientId(argument: Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdRequest, metadataOrOptions: grpc.Metadata | grpc.CallOptions | null, callback: grpc.requestCallback<Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdResponse>): grpc.ClientUnaryCall;
+  deleteAllVehiclesByClientId(argument: Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdRequest, metadata: grpc.Metadata | null, options: grpc.CallOptions | null, callback: grpc.requestCallback<Vehicle_Vehicle_pb.DeleteAllVehiclesByClientIdResponse>): grpc.ClientUnaryCall;
 }

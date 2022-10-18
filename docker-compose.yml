@@ -1,105 +1,81 @@
 version: "3.9"
 
 services:
-  redis-server:
-    container_name: redis
-    hostname: redis
-    build:
-      context: db/redis/build
-      dockerfile: redis.dockerfile
+  #####################
+  # API GATEWAY
+  #####################
+  api-gateway:
+    image: mechanic_service:latest
+    container_name: "api-gateway"
+    hostname: apigateway
+    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/ApiService/src/index.ts' ]
+    env_file:
+      - build/environments/grpc.env
+      - build/environments/production.env
     ports:
-      - "6379:6379"
-    volumes:
-      - ./db/redis/dump:/data
+      - 3000:3000
+    restart: always
+  #####################
+  # VEHICLE-SERVICE
+  #####################
   vehicle-service:
-    image: carservice:latest
+    image: mechanic_service:latest
     container_name: "vehicle-service"
     hostname: vehicle-service
     restart: always
-    depends_on:
-      - mongo
-    command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --transpile-only --files ./services/VehicleService/src/vehicleService.ts' ]
-    volumes:
-      - ./:/core/
-#      - /services/VehicleService/:/core/services/VehicleService/
+    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/VehicleService/src/vehicleService.ts' ]
     env_file:
-      - ./build/default.env
-    ports:
-      - 50053:50050
+      - build/environments/grpc.env
+      - build/environments/production.env
+  #####################
+  # CLIENT SERVICE
+  #####################
   client-service:
-    image: carservice:latest
+    image: mechanic_service:latest
     container_name: "client-service"
     hostname: client-service
     restart: always
-    depends_on:
-      - mongo
-    command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --transpile-only --files ./services/ClientService/src/clientService.ts' ]
-    volumes:
-      - ./:/core/
-    #      - /services/ClientService/:/core/services/ClientService/
+    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/ClientService/src/clientService.ts' ]
     env_file:
-      - ./build/default.env
-    ports:
-      - 50054:50050
-  api-gateway:
-    image: carservice:latest
-    container_name: "api-gateway"
-    hostname: apigateway
-    command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --transpile-only --files ./services/ApiService/src/index.ts' ]
-    volumes:
-      - ./services/ApiService/src:/core/services/ApiService/src/
+      - build/environments/grpc.env
+      - build/environments/production.env
+  #####################
+  # REPAIR SERVICE
+  #####################
+  repair-service:
+    image: mechanic_service:latest
+    container_name: "repair-service"
+    hostname: repair-service
+    restart: always
+    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/RepairService/src/RepairService.ts' ]
     env_file:
-      - ./build/default.env
-    ports:
-      - 3000:3000
-  ####
-#  mysql-db:
-#    image: mysql
-#    command: --default-authentication-plugin=mysql_native_password
-#    restart: always
-#    hostname: mysql
-#    ports:
-#      - 3306:3306
-#    env_file:
-#      - ./build/default.env
-  ####
-
-  ####
-#  mailer-service:
-#    image: course:latest
-#    container_name: "mailer-service"
-#    hostname: mailer-service
-#    depends_on:
-#      - mysql-db
-#      - redis-server
-#    command: [ 'sh', '-c', './build/wait-for/wait-for redis-server:6379 -- npm run ts-node-dev --respawn --transpile-only --files ./services/MailerService/services/mailerService.ts']
-#    volumes:
-#      - ./services/MailerService/:/core/services/MailerService/
-#    env_file:
-#      - ./build/default.env
-  ####
-#  user-service:
-#    image: course:latest
-#    container_name: "user-service"
-#    hostname: user-service
-#    restart: always
-#    depends_on:
-#      - mysql-db
-#    command: [ 'sh', '-c', './build/wait-for/wait-for mysql:3306 -- npm run ts-node-dev --respawn --transpile-only --files ./services/UserService/src/userService.ts' ]
-#    volumes:
-#      - ./services/UserService/src:/core/services/UserService/src/
-#    env_file:
-#      - ./build/default.env
-  ####
-#  auth-service:
-#    image: course:latest
-#    container_name: "auth-service"
-#    hostname: auth-service
-#    depends_on:
-#      - mysql-db
-#      - redis-server
-#    command: [ 'sh', '-c', './build/wait-for/wait-for mysql:3306 -- ./build/wait-for/wait-for redis-server:6379 -- npm run ts-node-dev --respawn --transpile-only --files ./services/AuthService/src/authService.ts' ]
-#    volumes:
-#      - ./services/AuthService/src:/core/services/AuthService/src/
-#    env_file:
-#      - ./build/default.env
+      - build/environments/grpc.env
+      - build/environments/production.env
+  #####################
+  # USER SERVICE
+  #####################
+  user-service:
+    image: mechanic_service:latest
+    container_name: "user-service"
+    hostname: user-service
+    restart: always
+    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/UserService/src/userService.ts' ]
+    volumes:
+      - ./services/UserService/src:/core/services/UserService/src/
+    env_file:
+      - build/environments/grpc.env
+      - build/environments/production.env
+  #####################
+  # AUTH SERVICE
+  #####################
+  auth-service:
+    image: mechanic_service:latest
+    container_name: "auth-service"
+    hostname: auth-service
+    restart: always
+    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/AuthService/src/authService.ts' ]
+    volumes:
+      - ./services/AuthService/src:/core/services/AuthService/src/
+    env_file:
+      - build/environments/grpc.env
+      - build/environments/production.env

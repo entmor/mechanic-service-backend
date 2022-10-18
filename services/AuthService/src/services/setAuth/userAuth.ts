@@ -1,16 +1,13 @@
-import * as grpc from '@grpc/grpc-js';
-
-import { User } from '../../../../../interface/user';
-import { GenderGrpc } from '../../../../../interface/gender';
-import { UserClient } from '../../../../../grpc/User/User_grpc_pb';
+import { User } from '../../../../../interface/user.interface';
 import { GetUserAuthRequest } from '../../../../../grpc/User/User_pb';
+import { grpcUserClient } from '../../../../grpcClients';
 
-const grpcUserClient = new UserClient(
-    `${process.env.GRPC_USER_SERVICE_URL}`,
-    grpc.credentials.createInsecure()
-);
-
-export const userAuth = (email: string): Promise<User<GenderGrpc>> => {
+export const userAuth = (
+    email: string
+): Promise<{
+    user: User;
+    salt: string;
+}> => {
     /**
      * 1) PREPARE DATA FOR GRPC_REQUEST [GET_USER_AUTH]
      * 2) SEND REQUEST [GET_USER_AUTH]
@@ -22,9 +19,12 @@ export const userAuth = (email: string): Promise<User<GenderGrpc>> => {
         grpcUserClient.getUserAuth(grpcUserAuthRequest, async (error, grpcUserAuthResponse) => {
             if (error) {
                 reject(error);
+            } else {
+                resolve({
+                    user: grpcUserAuthResponse.getUser().toObject(),
+                    salt: grpcUserAuthResponse.getSalt(),
+                });
             }
-
-            resolve(grpcUserAuthResponse.getUser().toObject());
         });
     });
 };

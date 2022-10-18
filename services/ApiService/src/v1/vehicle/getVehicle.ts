@@ -1,9 +1,9 @@
 import Joi from 'joi';
 import { Request, Response } from 'express';
-import { Vehicle } from '../../../../../interface/vehicle-interface';
+import { Vehicle } from '../../../../../interface/vehicle.interface';
 import { ApiResponse, errorsHandler } from '../../errors';
 import { RegExpPatterns } from '../../../../../helpers/validate';
-import { grpcVehicleClient } from '../../grpcClients';
+import { grpcVehicleClient } from '../../../../grpcClients';
 import { GetVehicleRequest } from '../../../../../grpc/Vehicle/Vehicle_pb';
 
 type RequestApi = Request<{ id: number }>;
@@ -38,8 +38,6 @@ export default function (requestApi: RequestApi, responseApi: ResponseApi): void
                 } else {
                     /** SUCCESS GRPC_REQUEST HANDLER [GET_VEHICLE] **/
                     const vehicle: Vehicle = grpcResponse.getVehicle().toObject();
-
-
 
                     responseApi.json(vehicle);
                 }

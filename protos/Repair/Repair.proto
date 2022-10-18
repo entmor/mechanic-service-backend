@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+import 'Schema/VehicleSchema.proto';
+
+package Repair;
+
+message RepairCostsSchema{
+  int32 count_all = 1;
+  double price_netto_all = 2;
+  double price_brutto_all = 3;
+  double tax_all = 4;
+}
+
+message RepairPartSchema {
+  string name = 1;
+  double price_buy_netto = 2;
+  double price_netto = 3;
+  double price_brutto = 4;
+  double tax = 5;
+  int32 count = 6;
+}
+
+message RepairSchema {
+  string id = 1;
+  string type = 2;
+  string status = 3;
+  int32 mileage = 4;
+  string vehicle_id = 5;
+  optional Schema.VehicleSchema vehicle = 6;
+  repeated RepairPartSchema parts = 7;
+  optional RepairCostsSchema costs = 8;
+  int64 created_at = 9;
+  int64 updated_at = 10;
+}
+
+message GetRepairRequest{
+  string id = 1;
+}
+
+message GetRepairResponse{
+  RepairSchema repair = 1;
+}
+
+message SetRepairRequest{
+  RepairSchema repair = 1;
+}
+
+message SetRepairResponse{
+  string id = 1;
+}
+
+message UpdateRepairRequest{
+  RepairSchema repair = 1;
+}
+
+message UpdateRepairResponse{
+  bool updated = 1;
+}
+
+message DeleteRepairRequest{
+  string id = 1;
+}
+
+message DeleteRepairResponse{
+  bool deleted = 1;
+}
+
+message DeleteAllRepairsByVehicleIdRequest{
+  string vehicle_id = 1;
+}
+
+message DeleteAllRepairsByVehicleIdResponse{
+  bool deleted = 1;
+}
+
+message GetAllRepairsRequest{
+  int32 page = 1;
+  int32 per_page = 2;
+  string sort = 3;
+  string orderby = 4;
+  optional string where = 5;
+}
+
+message GetAllRepairsResponse{
+  int32 count = 1;
+  int32 page = 2;
+  int32 per_page = 3;
+  string sort = 4;
+  bool is_next_page = 5;
+  repeated RepairSchema repairs = 6;
+}
+
+service Repair{
+  //Un
+  rpc GetRepair (GetRepairRequest) returns (GetRepairResponse) {};
+
+  rpc SetRepair (SetRepairRequest) returns (SetRepairResponse) {};
+
+  rpc UpdateRepair (UpdateRepairRequest) returns (UpdateRepairResponse) {};
+
+  rpc DeleteRepair (DeleteRepairRequest) returns (DeleteRepairResponse) {};
+
+  rpc GetAllRepairs (GetAllRepairsRequest) returns (GetAllRepairsResponse) {};
+
+  rpc DeleteAllRepairsByVehicleId (DeleteAllRepairsByVehicleIdRequest) returns (DeleteAllRepairsByVehicleIdResponse) {};
+}
+

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import Joi from 'joi';
 import { ApiResponse, errorsHandler } from '../../errors';
 import { RegExpPatterns } from '../../../../../helpers/validate';
-import { grpcVehicleClient } from '../../grpcClients';
+import { grpcVehicleClient } from '../../../../grpcClients';
 import { DeleteVehicleRequest } from '../../../../../grpc/Vehicle/Vehicle_pb';
 
 type RequestApi = Request<{ id: number }>;

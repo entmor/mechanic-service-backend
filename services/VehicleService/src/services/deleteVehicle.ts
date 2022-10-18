@@ -1,10 +1,12 @@
 import * as grpc from '@grpc/grpc-js';
 import { isDeleted, MongoDb } from '../../../../middleware/Mongodb/mongodb';
 import { ObjectId } from 'mongodb';
-import { Vehicle } from '../../../../interface/vehicle-interface';
+import { Vehicle } from '../../../../interface/vehicle.interface';
 import Joi from 'joi';
 import { RegExpPatterns } from '../../../../helpers/validate';
 import { DeleteVehicleRequest, DeleteVehicleResponse } from '../../../../grpc/Vehicle/Vehicle_pb';
+import { DeleteAllRepairsByVehicleIdRequest } from '../../../../grpc/Repair/Repair_pb';
+import { grpcRepairClient } from '../../../grpcClients';
 
 type Call = grpc.ServerUnaryCall<DeleteVehicleRequest, DeleteVehicleResponse>;
 type Callback = grpc.sendUnaryData<DeleteVehicleResponse>;
@@ -31,6 +33,17 @@ export const deleteVehicle = (mongodb: MongoDb<Vehicle>) => {
                     await mongodb.collection.deleteOne({
                         _id: vehicleId,
                     })
+                );
+
+                /** DELETE ALL REPAIRS THIS VEHICLE **/
+                const grpcDeleteAllRepairByVehicleIdRequest =
+                    new DeleteAllRepairsByVehicleIdRequest();
+                grpcDeleteAllRepairByVehicleIdRequest.setVehicleId(request.getId());
+                grpcRepairClient.deleteAllRepairsByVehicleId(
+                    grpcDeleteAllRepairByVehicleIdRequest,
+                    () => {
+                        return true;
+                    }
                 );
 
                 /** SUCCESS RESPONSE GRPC [DELETE_VEHICLE] */

@@ -25,10 +25,31 @@ message SetAuthResponse{
   Schema.UserSchema user = 2;
 }
 
+message DeleteAuthRequest{
+  string token = 1;
+}
+
+message DeleteAuthResponse{
+  bool deleted = 1;
+}
+
+message DeleteAllAuthByIdRequest{
+  string id = 1;
+}
+
+message DeleteAllAuthByIdResponse{
+  bool deleted = 1;
+}
+
 service Auth{
   //Un
   rpc GetAuth (GetAuthRequest) returns (GetAuthResponse) {};
 
   rpc SetAuth (SetAuthRequest) returns (SetAuthResponse) {};
+
+  rpc DeleteAuth (DeleteAuthRequest) returns (DeleteAuthResponse) {};
+
+  rpc DeleteAuthById (DeleteAllAuthByIdRequest) returns (DeleteAllAuthByIdResponse) {};
+
 }
 

@@ -5,6 +5,8 @@ import Joi from 'joi';
 import { RegExpPatterns } from '../../../../helpers/validate';
 import { ObjectId } from 'mongodb';
 import { Client } from '../../../../interface/client.interface';
+import { DeleteAllVehiclesByClientIdRequest } from '../../../../grpc/Vehicle/Vehicle_pb';
+import { grpcVehicleClient } from '../../../grpcClients';
 
 type Call = grpc.ServerUnaryCall<DeleteClientRequest, DeleteClientResponse>;
 type Callback = grpc.sendUnaryData<DeleteClientResponse>;
@@ -31,6 +33,14 @@ export const deleteClient = (mongodb: MongoDb<Client>) => {
                     await mongodb.collection.deleteOne({
                         _id: clientId,
                     })
+                );
+
+                /** REMOVE ALL CLIENT VEHICLES **/
+                const grpcDeleteAllVehiclesByClientId = new DeleteAllVehiclesByClientIdRequest();
+                grpcDeleteAllVehiclesByClientId.setClientId(param_id.value);
+                grpcVehicleClient.deleteAllVehiclesByClientId(
+                    grpcDeleteAllVehiclesByClientId,
+                    () => true
                 );
 
                 /** SUCCESS RESPONSE GRPC [DELETE_CAR] */

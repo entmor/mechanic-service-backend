@@ -315,8 +315,7 @@ proto.User.GetUserRequest.prototype.toObject = function(opt_includeInstance) {
  */
 proto.User.GetUserRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    auth: (f = msg.getAuth()) && Schema_AuthSchema_pb.AuthUser.toObject(includeInstance, f)
+    id: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -354,13 +353,8 @@ proto.User.GetUserRequest.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {string} */ (reader.readString());
       msg.setId(value);
-      break;
-    case 2:
-      var value = new Schema_AuthSchema_pb.AuthUser;
-      reader.readMessage(value,Schema_AuthSchema_pb.AuthUser.deserializeBinaryFromReader);
-      msg.setAuth(value);
       break;
     default:
       reader.skipField();
@@ -392,75 +386,30 @@ proto.User.GetUserRequest.prototype.serializeBinary = function() {
 proto.User.GetUserRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getId();
-  if (f !== 0) {
-    writer.writeInt32(
+  if (f.length > 0) {
+    writer.writeString(
       1,
       f
     );
   }
-  f = message.getAuth();
-  if (f != null) {
-    writer.writeMessage(
-      2,
-      f,
-      Schema_AuthSchema_pb.AuthUser.serializeBinaryToWriter
-    );
-  }
 };
 
 
 /**
- * optional int32 id = 1;
- * @return {number}
+ * optional string id = 1;
+ * @return {string}
  */
 proto.User.GetUserRequest.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * @param {number} value
+ * @param {string} value
  * @return {!proto.User.GetUserRequest} returns this
  */
 proto.User.GetUserRequest.prototype.setId = function(value) {
-  return jspb.Message.setProto3IntField(this, 1, value);
-};
-
-
-/**
- * optional Schema.AuthUser auth = 2;
- * @return {?proto.Schema.AuthUser}
- */
-proto.User.GetUserRequest.prototype.getAuth = function() {
-  return /** @type{?proto.Schema.AuthUser} */ (
-    jspb.Message.getWrapperField(this, Schema_AuthSchema_pb.AuthUser, 2));
-};
-
-
-/**
- * @param {?proto.Schema.AuthUser|undefined} value
- * @return {!proto.User.GetUserRequest} returns this
-*/
-proto.User.GetUserRequest.prototype.setAuth = function(value) {
-  return jspb.Message.setWrapperField(this, 2, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.User.GetUserRequest} returns this
- */
-proto.User.GetUserRequest.prototype.clearAuth = function() {
-  return this.setAuth(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.User.GetUserRequest.prototype.hasAuth = function() {
-  return jspb.Message.getField(this, 2) != null;
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -828,7 +777,7 @@ proto.User.SetUserResponse.prototype.toObject = function(opt_includeInstance) {
  */
 proto.User.SetUserResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    id: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -866,7 +815,7 @@ proto.User.SetUserResponse.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {string} */ (reader.readString());
       msg.setId(value);
       break;
     default:
@@ -899,8 +848,8 @@ proto.User.SetUserResponse.prototype.serializeBinary = function() {
 proto.User.SetUserResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getId();
-  if (f !== 0) {
-    writer.writeInt32(
+  if (f.length > 0) {
+    writer.writeString(
       1,
       f
     );
@@ -909,20 +858,20 @@ proto.User.SetUserResponse.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional int32 id = 1;
- * @return {number}
+ * optional string id = 1;
+ * @return {string}
  */
 proto.User.SetUserResponse.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * @param {number} value
+ * @param {string} value
  * @return {!proto.User.SetUserResponse} returns this
  */
 proto.User.SetUserResponse.prototype.setId = function(value) {
-  return jspb.Message.setProto3IntField(this, 1, value);
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1109,7 +1058,7 @@ proto.User.UpdateUserResponse.prototype.toObject = function(opt_includeInstance)
  */
 proto.User.UpdateUserResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    user: (f = msg.getUser()) && Schema_UserSchema_pb.UserSchema.toObject(includeInstance, f)
+    updated: jspb.Message.getBooleanFieldWithDefault(msg, 1, false)
   };
 
   if (includeInstance) {
@@ -1147,9 +1096,8 @@ proto.User.UpdateUserResponse.deserializeBinaryFromReader = function(msg, reader
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new Schema_UserSchema_pb.UserSchema;
-      reader.readMessage(value,Schema_UserSchema_pb.UserSchema.deserializeBinaryFromReader);
-      msg.setUser(value);
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setUpdated(value);
       break;
     default:
       reader.skipField();
@@ -1180,51 +1128,31 @@ proto.User.UpdateUserResponse.prototype.serializeBinary = function() {
  */
 proto.User.UpdateUserResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getUser();
-  if (f != null) {
-    writer.writeMessage(
+  f = message.getUpdated();
+  if (f) {
+    writer.writeBool(
       1,
-      f,
-      Schema_UserSchema_pb.UserSchema.serializeBinaryToWriter
+      f
     );
   }
 };
 
 
 /**
- * optional Schema.UserSchema user = 1;
- * @return {?proto.Schema.UserSchema}
- */
-proto.User.UpdateUserResponse.prototype.getUser = function() {
-  return /** @type{?proto.Schema.UserSchema} */ (
-    jspb.Message.getWrapperField(this, Schema_UserSchema_pb.UserSchema, 1));
-};
-
-
-/**
- * @param {?proto.Schema.UserSchema|undefined} value
- * @return {!proto.User.UpdateUserResponse} returns this
-*/
-proto.User.UpdateUserResponse.prototype.setUser = function(value) {
-  return jspb.Message.setWrapperField(this, 1, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.User.UpdateUserResponse} returns this
- */
-proto.User.UpdateUserResponse.prototype.clearUser = function() {
-  return this.setUser(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
+ * optional bool updated = 1;
  * @return {boolean}
  */
-proto.User.UpdateUserResponse.prototype.hasUser = function() {
-  return jspb.Message.getField(this, 1) != null;
+proto.User.UpdateUserResponse.prototype.getUpdated = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.User.UpdateUserResponse} returns this
+ */
+proto.User.UpdateUserResponse.prototype.setUpdated = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 1, value);
 };
 
 
@@ -1260,7 +1188,7 @@ proto.User.DeleteUserRequest.prototype.toObject = function(opt_includeInstance) 
  */
 proto.User.DeleteUserRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    id: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -1298,7 +1226,7 @@ proto.User.DeleteUserRequest.deserializeBinaryFromReader = function(msg, reader)
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {string} */ (reader.readString());
       msg.setId(value);
       break;
     default:
@@ -1331,8 +1259,8 @@ proto.User.DeleteUserRequest.prototype.serializeBinary = function() {
 proto.User.DeleteUserRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getId();
-  if (f !== 0) {
-    writer.writeInt32(
+  if (f.length > 0) {
+    writer.writeString(
       1,
       f
     );
@@ -1341,20 +1269,20 @@ proto.User.DeleteUserRequest.serializeBinaryToWriter = function(message, writer)
 
 
 /**
- * optional int32 id = 1;
- * @return {number}
+ * optional string id = 1;
+ * @return {string}
  */
 proto.User.DeleteUserRequest.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * @param {number} value
+ * @param {string} value
  * @return {!proto.User.DeleteUserRequest} returns this
  */
 proto.User.DeleteUserRequest.prototype.setId = function(value) {
-  return jspb.Message.setProto3IntField(this, 1, value);
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1390,7 +1318,7 @@ proto.User.DeleteUserResponse.prototype.toObject = function(opt_includeInstance)
  */
 proto.User.DeleteUserResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    success: jspb.Message.getBooleanFieldWithDefault(msg, 1, false)
+    deleted: jspb.Message.getBooleanFieldWithDefault(msg, 1, false)
   };
 
   if (includeInstance) {
@@ -1429,7 +1357,7 @@ proto.User.DeleteUserResponse.deserializeBinaryFromReader = function(msg, reader
     switch (field) {
     case 1:
       var value = /** @type {boolean} */ (reader.readBool());
-      msg.setSuccess(value);
+      msg.setDeleted(value);
       break;
     default:
       reader.skipField();
@@ -1460,7 +1388,7 @@ proto.User.DeleteUserResponse.prototype.serializeBinary = function() {
  */
 proto.User.DeleteUserResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getSuccess();
+  f = message.getDeleted();
   if (f) {
     writer.writeBool(
       1,
@@ -1471,10 +1399,10 @@ proto.User.DeleteUserResponse.serializeBinaryToWriter = function(message, writer
 
 
 /**
- * optional bool success = 1;
+ * optional bool deleted = 1;
  * @return {boolean}
  */
-proto.User.DeleteUserResponse.prototype.getSuccess = function() {
+proto.User.DeleteUserResponse.prototype.getDeleted = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
 };
 
@@ -1483,7 +1411,7 @@ proto.User.DeleteUserResponse.prototype.getSuccess = function() {
  * @param {boolean} value
  * @return {!proto.User.DeleteUserResponse} returns this
  */
-proto.User.DeleteUserResponse.prototype.setSuccess = function(value) {
+proto.User.DeleteUserResponse.prototype.setDeleted = function(value) {
   return jspb.Message.setProto3BooleanField(this, 1, value);
 };
 
@@ -1523,7 +1451,8 @@ proto.User.GetAllUsersRequest.toObject = function(includeInstance, msg) {
     page: jspb.Message.getFieldWithDefault(msg, 1, 0),
     perPage: jspb.Message.getFieldWithDefault(msg, 2, 0),
     sort: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    orderby: jspb.Message.getFieldWithDefault(msg, 4, "")
+    orderby: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    where: jspb.Message.getFieldWithDefault(msg, 5, "")
   };
 
   if (includeInstance) {
@@ -1575,6 +1504,10 @@ proto.User.GetAllUsersRequest.deserializeBinaryFromReader = function(msg, reader
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setOrderby(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setWhere(value);
       break;
     default:
       reader.skipField();
@@ -1630,6 +1563,13 @@ proto.User.GetAllUsersRequest.serializeBinaryToWriter = function(message, writer
   if (f.length > 0) {
     writer.writeString(
       4,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 5));
+  if (f != null) {
+    writer.writeString(
+      5,
       f
     );
   }
@@ -1705,6 +1645,42 @@ proto.User.GetAllUsersRequest.prototype.getOrderby = function() {
  */
 proto.User.GetAllUsersRequest.prototype.setOrderby = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional string where = 5;
+ * @return {string}
+ */
+proto.User.GetAllUsersRequest.prototype.getWhere = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.User.GetAllUsersRequest} returns this
+ */
+proto.User.GetAllUsersRequest.prototype.setWhere = function(value) {
+  return jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.User.GetAllUsersRequest} returns this
+ */
+proto.User.GetAllUsersRequest.prototype.clearWhere = function() {
+  return jspb.Message.setField(this, 5, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.User.GetAllUsersRequest.prototype.hasWhere = function() {
+  return jspb.Message.getField(this, 5) != null;
 };
 
 

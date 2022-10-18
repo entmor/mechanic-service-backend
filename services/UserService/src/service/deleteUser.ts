@@ -1,30 +1,61 @@
 import * as grpc from '@grpc/grpc-js';
 import { DeleteUserRequest, DeleteUserResponse } from '../../../../grpc/User/User_pb';
-import { SequelizeInit } from '../../../../middleware/Sequelize';
-import { modelName as USER_MODEL_NAME, UserInstance } from '../model/db.model';
-import { deleteByID } from '../../../../helpers/database';
+import { isDeleted, MongoDb } from '../../../../middleware/Mongodb/mongodb';
+import { User } from '../../../../interface/user.interface';
+import Joi from 'joi';
+import { RegExpPatterns } from '../../../../helpers/validate';
+import { ObjectId } from 'mongodb';
+import { grpcAuthClient } from '../../../grpcClients';
+import { DeleteAllAuthByIdRequest } from '../../../../grpc/Auth/Auth_pb';
 
 type Call = grpc.ServerUnaryCall<DeleteUserRequest, DeleteUserResponse>;
 type Callback = grpc.sendUnaryData<DeleteUserResponse>;
 
-export const deleteUser = (sequelize: SequelizeInit<UserInstance>) => {
-    const database = sequelize.getModel(USER_MODEL_NAME);
-
+export const deleteUser = (mongodb: MongoDb<User>) => {
     return async ({ request }: Call, callback: Callback): Promise<void> => {
         try {
-            const ID = request.getId();
+            /** CHECK PARAMS FROM REQUEST **/
+            const param_id = Joi.string()
+                .required()
+                .pattern(RegExpPatterns.mongoId)
+                .validate(request.getId());
 
-            // DELETE OBJECT
-            const deleteResponse = await deleteByID<UserInstance>(database, ID);
+            if (param_id.error) {
+                /** SEND RESPONSE_ERROR [DELETE_USER] **/
+                callback({
+                    code: grpc.status.INVALID_ARGUMENT,
+                    message: param_id.error.message,
+                });
+            } else {
+                /** DELETE USER FROM DATABASE **/
+                const userId = new ObjectId(request.getId());
+                const deleted = await isDeleted(
+                    await mongodb.collection.deleteOne({
+                        _id: userId,
+                    })
+                );
 
-            // GRPC RESPONSE
-            const response = new DeleteUserResponse();
-            response.setSuccess(deleteResponse);
+                const requestGRPC = new DeleteAllAuthByIdRequest();
+                requestGRPC.setId(request.getId());
 
-            callback(null, response);
-            //
+                grpcAuthClient.deleteAuthById(requestGRPC, (err, value) => {
+                    return value;
+                });
+
+                /** SUCCESS RESPONSE GRPC [DELETE_USER] */
+                const responseGRPC = new DeleteUserResponse();
+                responseGRPC.setDeleted(deleted);
+
+                callback(null, responseGRPC);
+                //
+            }
         } catch (e) {
-            callback(e, null);
+            /** SEND RESPONSE_ERROR [DELETE_USER] **/
+
+            callback({
+                code: e.code || grpc.status.INTERNAL,
+                message: e.message || 'SERVER ERROR',
+            });
         }
     };
 };

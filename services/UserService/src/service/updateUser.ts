@@ -1,77 +1,90 @@
 import * as grpc from '@grpc/grpc-js';
 import { UpdateUserRequest, UpdateUserResponse } from '../../../../grpc/User/User_pb';
-import { SequelizeInit } from '../../../../middleware/Sequelize';
-import { modelName as USER_MODEL_NAME, UserInstance } from '../model/db.model';
 import { JoiValidator } from '../../../../helpers/validate';
-import { User } from '../../../../interface/user';
-import { GenderGrpc } from '../../../../interface/gender';
-import { UpdateUserValidator } from '../validator';
-import { isExistByID, updateByID } from '../../../../helpers/database';
+import { User } from '../../../../interface/user.interface';
+import { UpdateUserValidator } from '../model/user.joi-schema';
 import { PasswordModule } from '../../../../middleware/Pbkdf2/pbkdf2';
-import { fromJsonToGrpc } from '../../../../helpers/grpc';
-import { UserSchema } from '../../../../grpc/Schema/UserSchema_pb';
+import { isUpdated, MongoDb } from '../../../../middleware/Mongodb/mongodb';
+import { ObjectId } from 'mongodb';
+import { grpcAuthClient } from '../../../grpcClients';
+import { DeleteAllAuthByIdRequest } from '../../../../grpc/Auth/Auth_pb';
 
 type Call = grpc.ServerUnaryCall<UpdateUserRequest, UpdateUserResponse>;
 type Callback = grpc.sendUnaryData<UpdateUserResponse>;
 
-type OmittedUser = Omit<User<GenderGrpc>, 'createdAt' | 'updatedAt'>;
+type OmittedUser = Omit<User, 'createdAt' | 'updatedAt'>;
 
 interface UserUpdate extends OmittedUser {
     password?: string;
     salt?: string;
 }
 
-export const updateInstructor = (sequelize: SequelizeInit<UserInstance>) => {
-    const database = sequelize.getModel(USER_MODEL_NAME);
-
+export const updateUser = (mongodb: MongoDb<User>) => {
     const userToUpdate: Partial<UserUpdate> = {};
 
     return async ({ request }: Call, callback: Callback): Promise<void> => {
         try {
-            // GET USER FROM GRPC && VALIDATE
-            const user = request.getUser().toObject();
-            const validated = await JoiValidator<OmittedUser, OmittedUser>(
+            /** GET CAR FROM GRPC && VALIDATE */
+            const clientObjectFromGRPC = request.getUser().toObject();
+            const userValidated = await JoiValidator<OmittedUser, OmittedUser>(
                 UpdateUserValidator,
-                user,
+                clientObjectFromGRPC,
                 {
                     removeId: false,
                     removeEmptyProperties: true,
+                    excludeKeys: ['createdAt', 'updatedAt'],
                 }
             );
 
-            // GET ID AND REMOVE FROM VALIDATED OBJECT ID, BECAUSE ID CANT BE UPDATED
-            const ID = validated.id;
-            delete validated.id;
-
-            // if PASSWORD is to change
-            if (validated.password) {
-                const { hashedPassword, salt } = await PasswordModule.create(validated.password);
+            /** if PASSWORD is to change **/
+            if (userValidated.password) {
+                const { hashedPassword, salt } = await PasswordModule.create(
+                    userValidated.password
+                );
                 userToUpdate.password = hashedPassword;
                 userToUpdate.salt = salt;
+
+
             }
 
-            // IF USER EXIST, THEN UPDATE
-            await isExistByID<UserInstance, User<GenderGrpc>>(database, ID);
-            const updatedUser = updateByID<UserInstance, Partial<OmittedUser>, User<GenderGrpc>>(
-                database,
-                ID,
-                { ...validated, ...userToUpdate }
+            /** GET ID AND REMOVE FROM VALIDATED OBJECT ID, BECAUSE ID CANT BE UPDATED **/
+            const userId = new ObjectId(userValidated.id);
+            delete userValidated.id;
+
+            const updatedResponse = await isUpdated(
+                await mongodb.collection.updateOne(
+                    {
+                        _id: userId,
+                    },
+                    {
+                        $set: {
+                            ...userValidated,
+                            ...userToUpdate,
+                            updatedAt: Date.now(),
+                        },
+                    }
+                )
             );
 
-            // GRPC RESPONSE
-            const userSchema = fromJsonToGrpc<UserSchema, User<GenderGrpc>>(
-                new UserSchema(),
-                updatedUser,
-                { getTimeChange: true, excludeKeys: ['password', 'salt'] }
-            );
+            /** DELETE ACTIVE AUTH SESSIONS **/
+            const requestGRPC = new DeleteAllAuthByIdRequest();
+            requestGRPC.setId(clientObjectFromGRPC.id);
+            grpcAuthClient.deleteAuthById(requestGRPC, (err, value) => {
+                return value;
+            });
 
-            const setResponse = new UpdateUserResponse();
-            setResponse.setUser(userSchema);
+            /** SUCCESS RESPONSE GRPC [UPDATE_USER]  */
+            const responseGRPC = new UpdateUserResponse();
+            responseGRPC.setUpdated(updatedResponse);
 
-            callback(null, setResponse);
+            callback(null, responseGRPC);
             //
         } catch (e) {
-            callback(e, null);
+            /** SEND RESPONSE_ERROR [UPDATE_CLIENT] **/
+            callback({
+                code: e.code || grpc.status.INTERNAL,
+                message: e.message || 'SERVER ERROR',
+            });
         }
     };
 };

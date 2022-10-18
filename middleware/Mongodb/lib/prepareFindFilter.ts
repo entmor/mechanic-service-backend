@@ -1,4 +1,4 @@
-import { JoiSchemaList, JoiSchema } from '../../../interface/joi';
+import { JoiSchemaList, JoiSchema } from '../../../interface/joi.interface';
 import { status } from '@grpc/grpc-js';
 import { ObjectId } from 'mongodb';
 

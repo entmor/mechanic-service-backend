@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { GetAllRequest, GetAllResponse } from '../../../../../interface/request';
+import { GetAllRequest, GetAllResponse } from '../../../../../interface/request.interface';
 import { ApiResponse, errorsHandler } from '../../errors';
 import { Client } from '../../../../../interface/client.interface';
-import { grpcClientClient } from '../../grpcClients';
+import { grpcClientClient } from '../../../../grpcClients';
 import { GetAllClientsRequest } from '../../../../../grpc/Client/Client_pb';
 
 type RequestApi = Request<unknown, unknown, unknown, GetAllRequest>;

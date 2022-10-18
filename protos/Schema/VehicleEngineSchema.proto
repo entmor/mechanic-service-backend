@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package Schema;
+
+message VehicleEngineSchema {
+  double engine_size = 1;
+  int32 engine_power = 2;
+  string engine_type = 3;
+}
