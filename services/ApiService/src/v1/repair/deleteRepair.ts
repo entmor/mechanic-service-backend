@@ -4,12 +4,18 @@ import Joi from 'joi';
 import { RegExpPatterns } from '../../../../../helpers/validate';
 import { grpcRepairClient } from '../../../../grpcClients';
 import { DeleteRepairRequest } from '../../../../../grpc/Repair/Repair_pb';
+import { Logger } from '../../../../../middleware/Logger/logger';
+import { User } from '../../../../../interface/user.interface';
+import { status } from '@grpc/grpc-js';
+import { catchErrorAndResponse } from '../../middleware/catchError';
 
 type RequestApi = Request<{ id: number }>;
-type ResponseApi = Response<{ deleted: boolean } | ApiResponse>;
+type ResponseApi = Response<{ deleted: boolean } | ApiResponse, { logger: Logger; user: User }>;
 
 export default function (requestApi: RequestApi, responseApi: ResponseApi): void {
     try {
+        const { logger, user } = responseApi.locals;
+
         /** CHECK PARAMS FROM REQUEST **/
         const param_id = Joi.string()
             .required()
@@ -18,15 +24,20 @@ export default function (requestApi: RequestApi, responseApi: ResponseApi): void
 
         if (param_id.error) {
             /** ERROR GRPC_REQUEST HANDLER [DELETE_REPAIR] **/
-            responseApi.status(400).json({
-                code: 3,
-                http_code: 400,
+            Promise.reject({
+                code: status.INVALID_ARGUMENT,
                 message: 'WRONG ID',
             });
+
+            /** LOGGER  **/
+            logger.log('debug', param_id.error);
         } else {
             /** MAKE GRPC_REQUEST [DELETE_REPAIR] **/
             const requestGRPC = new DeleteRepairRequest();
             requestGRPC.setId(param_id.value);
+
+            /** LOGGER  **/
+            logger.log('debug', { setId: param_id.value });
 
             grpcRepairClient.deleteRepair(requestGRPC, (error, grpcResponse): void => {
                 if (error) {
@@ -38,15 +49,19 @@ export default function (requestApi: RequestApi, responseApi: ResponseApi): void
                     responseApi.json({
                         deleted: grpcResponse.getDeleted(),
                     });
+
+                    /** LOGGER  **/
+                    logger.apiResponse(requestApi, {
+                        userId: user.id,
+                        rest: {
+                            deletedId: param_id.value,
+                        },
+                    });
                 }
             });
         }
     } catch (error) {
         /** ERROR GRPC_REQUEST HANDLER [DELETE_REPAIR] **/
-        responseApi.status(500).json({
-            code: 13,
-            http_code: 500,
-            message: 'Server ERROR',
-        });
+        catchErrorAndResponse(error, responseApi, 'delteRepair');
     }
 }

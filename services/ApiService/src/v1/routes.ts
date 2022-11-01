@@ -4,7 +4,11 @@ import getUser from './user/getUser';
 import setUser from './user/setUser';
 import getAllUsers from './user/getAllUsers';
 import deleteUser from './user/deleteUser';
+import updateUser from './user/updateUser';
 
+
+import getAuth from './auth/getAuth';
+import deleteAuth from './auth/delAuth';
 import setAuth from './auth/setAuth';
 import { authenticator } from '../middleware/authenticator';
 
@@ -19,13 +23,13 @@ import getClient from './clients/getClient';
 import setClient from './clients/setClient';
 import updateClient from './clients/updateClient';
 import deleteClient from './clients/deleteClient';
+
 import getRepair from './repair/getRepair';
 import setRepair from './repair/setRepair';
 import updateRepair from './repair/updateRepair';
 import deleteRepair from './repair/deleteRepair';
 import getAllRepairs from './repair/getAllRepairs';
-import getAuth from './auth/getAuth';
-import updateUser from './user/updateUser';
+
 import { isActive } from '../middleware/isActive';
 import { isAdministrator } from '../middleware/isAdministrator';
 
@@ -67,5 +71,6 @@ routes.delete('/repair/:id', authUserType, authenticator, isActive, deleteRepair
 
 routes.post('/auth', setAuth);
 routes.get('/auth', getAuth);
+routes.delete('/auth', deleteAuth);
 
 export default routes;

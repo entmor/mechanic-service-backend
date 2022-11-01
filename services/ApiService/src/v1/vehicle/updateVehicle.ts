@@ -6,14 +6,23 @@ import { grpcVehicleClient } from '../../../../grpcClients';
 import { UpdateVehicleRequest } from '../../../../../grpc/Vehicle/Vehicle_pb';
 import { VehicleEngineSchema } from '../../../../../grpc/Schema/VehicleEngineSchema_pb';
 import { VehicleSchema } from '../../../../../grpc/Schema/VehicleSchema_pb';
+import { Logger } from '../../../../../middleware/Logger/logger';
+import { User } from '../../../../../interface/user.interface';
+import { catchErrorAndResponse } from '../../middleware/catchError';
 
 type OmittedVehicle = Omit<Vehicle, 'createdAt' | 'updatedAt'>;
 
 type RequestApi = Request<any, any, OmittedVehicle>;
-type ResponseApi = Response<{ updated: boolean } | ApiResponse>;
+type ResponseApi = Response<{ updated: boolean } | ApiResponse, { logger: Logger; user: User }>;
 
-export default function ({ body }: RequestApi, responseApi: ResponseApi) {
+export default function (requestApi: RequestApi, responseApi: ResponseApi) {
     try {
+        const { body } = requestApi;
+        const { logger, user } = responseApi.locals;
+
+        /** LOGGER  **/
+        logger.log('debug', body);
+
         /** PREPARE DATE FOR GRPC_REQUEST [UPDATE_VEHICLE] **/
         const vehicleSchema = fromJsonToGrpc<VehicleSchema, Vehicle>(new VehicleSchema(), body, {
             excludeKeys: ['engine', 'createdAt', 'updatedAt'],
@@ -42,11 +51,18 @@ export default function ({ body }: RequestApi, responseApi: ResponseApi) {
                 responseApi.json({
                     updated: grpcResponse.getUpdated(),
                 });
+
+                /** LOGGER  **/
+                logger.apiResponse(requestApi, {
+                    userId: user.id,
+                    rest: {
+                        updated: grpcResponse.getUpdated(),
+                    },
+                });
             }
         });
     } catch (error) {
-        const errorResponse = errorsHandler(error);
-
-        responseApi.status(errorResponse.http_code).json(errorResponse);
+        /** ERROR GRPC_REQUEST HANDLER [UPDATE_VEHICLE] **/
+        catchErrorAndResponse(error, responseApi, 'updatedVehicle');
     }
 }

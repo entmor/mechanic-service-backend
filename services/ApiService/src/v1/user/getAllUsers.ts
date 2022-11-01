@@ -4,12 +4,17 @@ import { User } from '../../../../../interface/user.interface';
 import { ApiResponse, errorsHandler } from '../../errors';
 import { GetAllUsersRequest } from '../../../../../grpc/User/User_pb';
 import { grpcUserClient } from '../../../../grpcClients';
+import { Logger } from '../../../../../middleware/Logger/logger';
+import { catchErrorAndResponse } from '../../middleware/catchError';
 
 type RequestApi = Request<null, null, null, GetAllRequest>;
-type ResponseApi = Response<GetAllResponse<User> | ApiResponse>;
+type ResponseApi = Response<GetAllResponse<User> | ApiResponse, { logger: Logger; user: User }>;
 
-export default function ({ query }: RequestApi, responseApi: ResponseApi) {
+export default function (requestApi: RequestApi, responseApi: ResponseApi) {
     try {
+        const { query } = requestApi;
+        const { logger, user } = responseApi.locals;
+
         /** SET PARAMS FROM CALL **/
         const requestGRPC = new GetAllUsersRequest();
 
@@ -18,6 +23,9 @@ export default function ({ query }: RequestApi, responseApi: ResponseApi) {
         requestGRPC.setOrderby(query.orderby || '');
         requestGRPC.setSort(query.sort || '');
         requestGRPC.setWhere(JSON.stringify(query.where || {}));
+
+        /** LOGGER  **/
+        logger.log('debug', query);
 
         /** MAKE GRPC_REQUEST [GET_ALL_USERS] **/
         grpcUserClient.getAllUsers(requestGRPC, (error, grpcResponse) => {
@@ -39,14 +47,24 @@ export default function ({ query }: RequestApi, responseApi: ResponseApi) {
                     isNextPage,
                     data: usersList,
                 });
+
+                /** LOGGER  **/
+                logger.apiResponse(requestApi, {
+                    userId: user.id,
+                    rest: {
+                        user,
+                        count,
+                        listCount: usersList.length,
+                        page,
+                        perPage,
+                        sort,
+                        isNextPage,
+                    },
+                });
             }
         });
     } catch (error) {
         /** ERROR GRPC_REQUEST HANDLER [GET_ALL_USERS] **/
-        responseApi.status(500).json({
-            code: 13,
-            http_code: 500,
-            message: 'Server ERROR',
-        });
+        catchErrorAndResponse(error, responseApi, 'getAllUsers');
     }
 }
