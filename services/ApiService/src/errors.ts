@@ -1,5 +1,9 @@
 import { ServiceError } from '@grpc/grpc-js';
 
+import { Logger } from '../../../middleware/Logger/logger';
+
+const logger = new Logger();
+
 export interface ApiResponse extends Partial<ServiceError> {
     http_code: number;
     payload?: object | string;
@@ -60,6 +64,11 @@ export const errorsHandler = (error: ServiceError) => {
                 http_code: 500,
             };
     }
+
+    const loggerLvl = apiResponse.http_code >= 500 ? 'error' : 'info';
+
+    logger.log(loggerLvl, apiResponse.message);
+    logger.log('debug', { error, apiResponse });
 
     return apiResponse;
 };

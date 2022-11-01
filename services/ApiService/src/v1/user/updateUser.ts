@@ -5,42 +5,56 @@ import { fromJsonToGrpc } from '../../../../../helpers/grpc';
 import { UpdateUserRequest } from '../../../../../grpc/User/User_pb';
 import { grpcUserClient } from '../../../../grpcClients';
 import { UserSchema } from '../../../../../grpc/Schema/UserSchema_pb';
+import { Logger } from '../../../../../middleware/Logger/logger';
+import { catchErrorAndResponse } from '../../middleware/catchError';
 
 type OmittedUser = Omit<User, 'createdAt' | 'updatedAt'>;
 
 type RequestApi = Request<unknown, unknown, OmittedUser>;
-type ResponseApi = Response<{ updated: boolean } | ApiResponse>;
+type ResponseApi = Response<{ updated: boolean } | ApiResponse, { logger: Logger; user: User }>;
 
-export default function ({ body }: RequestApi, responseApi: ResponseApi) {
+export default function (requestApi: RequestApi, responseApi: ResponseApi) {
     try {
-        /** PREPARE DATE FOR GRPC_REQUEST [SET_USER] **/
+        const { body } = requestApi;
+        const { logger, user } = responseApi.locals;
+
+        /** LOGGER  **/
+        logger.log('debug', body);
+
+        /** PREPARE DATE FOR GRPC_REQUEST [UPDATE_USER] **/
         const userSchema = fromJsonToGrpc<UserSchema, User>(new UserSchema(), body, {
             excludeKeys: ['createdAt', 'sendEmail', 'updatedAt'],
         });
 
-        /** MAKE GRPC_REQUEST [SET_USER] **/
+        /** MAKE GRPC_REQUEST [UPDATE_USER] **/
         const requestGRPC = new UpdateUserRequest();
         requestGRPC.setUser(userSchema);
 
         grpcUserClient.updateUser(requestGRPC, (error, grpcResponse) => {
             if (error) {
-                /** ERROR GRPC_REQUEST HANDLER [SET_USER] **/
+                /** ERROR GRPC_REQUEST HANDLER [UPDATE_USER] **/
                 const errorResponse = errorsHandler(error);
 
                 responseApi.status(errorResponse.http_code).json(errorResponse);
             } else {
-                /** SUCCESS GRPC_REQUEST HANDLER [SET_USER] **/
+                /** SUCCESS GRPC_REQUEST HANDLER [UPDATE_USER] **/
 
                 responseApi.status(200).json({
                     updated: grpcResponse.getUpdated(),
+                });
+
+                /** LOGGER  **/
+                logger.apiResponse(requestApi, {
+                    userId: user.id,
+                    rest: {
+                        updated: grpcResponse.getUpdated(),
+                    },
                 });
             }
         });
         //
     } catch (error) {
-        /** ERROR GRPC_REQUEST HANDLER [SET_USER] **/
-        const errorResponse = errorsHandler(error);
-
-        responseApi.status(errorResponse.http_code).json(errorResponse);
+        /** ERROR GRPC_REQUEST HANDLER [UPDATE_USER] **/
+        catchErrorAndResponse(error, responseApi, 'updatedUser');
     }
 }

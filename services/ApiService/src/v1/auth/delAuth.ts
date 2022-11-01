@@ -1,14 +1,13 @@
 import { Request, Response } from 'express';
-import { User } from '../../../../../interface/user.interface';
 import { ApiResponse, errorsHandler } from '../../errors';
 import { grpcAuthClient } from '../../../../grpcClients';
-import { GetAuthRequest } from '../../../../../grpc/Auth/Auth_pb';
+import { DeleteAuthRequest } from '../../../../../grpc/Auth/Auth_pb';
 import { getToken } from '../../middleware/getToken';
 import { catchErrorAndResponse } from '../../middleware/catchError';
 import { Logger } from '../../../../../middleware/Logger/logger';
 
 type ResponseApi = Response<
-    { token: string; user: User } | ApiResponse,
+    { deleted: boolean } | ApiResponse,
     { type: 'user' | 'client'; logger: Logger }
 >;
 type RequestApi = Request<unknown, unknown, { token: string }>;
@@ -19,39 +18,36 @@ export default async function (requestApi: RequestApi, responseApi: ResponseApi)
         const { logger } = responseApi.locals;
 
         const token = await getToken(headers.authorization);
-        /** MAKE GRPC_REQUEST [GET_AUTH] **/
-        const grpcAuthRequest = new GetAuthRequest();
+        /** MAKE GRPC_REQUEST [DELETE_AUTH] **/
+        const grpcAuthRequest = new DeleteAuthRequest();
         grpcAuthRequest.setToken(token);
 
         /** LOGGER  **/
         logger.log('debug', { token });
 
-        grpcAuthClient.getAuth(grpcAuthRequest, (error, grpcAuthResponse) => {
+        grpcAuthClient.deleteAuth(grpcAuthRequest, (error, grpcAuthResponse) => {
             if (error) {
-                /** ERROR GRPC_REQUEST HANDLER [GET_AUTH] **/
+                /** ERROR GRPC_REQUEST HANDLER [DELETE_AUTH] **/
                 const errorResponse = errorsHandler(error);
                 responseApi.status(errorResponse.http_code).json(errorResponse);
             } else {
-                /** SUCCESS GRPC_REQUEST HANDLER [GET_AUTH] **/
-                const token = grpcAuthResponse.getToken();
-                const user = grpcAuthResponse.getUser().toObject();
+                /** SUCCESS GRPC_REQUEST HANDLER [DELETE_AUTH] **/
 
                 responseApi.json({
-                    token,
-                    user,
+                    deleted: grpcAuthResponse.getDeleted(),
                 });
 
                 /** LOGGER  **/
                 logger.apiResponse(requestApi, {
                     rest: {
                         token,
-                        user,
+                        deleted: grpcAuthResponse.getDeleted(),
                     },
                 });
             }
         });
     } catch (error) {
-        /** ERROR GRPC_REQUEST HANDLER [GET_AUTH] **/
-        catchErrorAndResponse(error, responseApi, 'getAuth');
+        /** ERROR GRPC_REQUEST HANDLER [DELETE_AUTH] **/
+        catchErrorAndResponse(error, responseApi, 'deleteAuth');
     }
 }

@@ -1,5 +1,5 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
-import * as grpc from '@grpc/grpc-js';
+import { status } from '@grpc/grpc-js';
 
 const EXP: number = +process.env.JWT_EXP;
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -17,7 +17,7 @@ export const createToken = async (
             jwt.sign(data, JWT_SECRET, options, (err, token) => {
                 if (err) {
                     reject({
-                        code: grpc.status.INTERNAL,
+                        code: status.UNAUTHENTICATED,
                         message: err.message,
                     });
                 }
@@ -26,7 +26,7 @@ export const createToken = async (
             });
         } catch (e) {
             reject({
-                code: grpc.status.INTERNAL,
+                code: status.INTERNAL,
                 message: 'Create Token - Error',
             });
         }
@@ -39,7 +39,7 @@ export async function verifyToken<T>(token: string): Promise<T> {
             jwt.verify(token, JWT_SECRET, optionsToken, (err, decoded: T) => {
                 if (err) {
                     reject({
-                        code: grpc.status.INTERNAL,
+                        code: status.UNAUTHENTICATED,
                         message: err.message,
                     });
                 }
@@ -48,7 +48,7 @@ export async function verifyToken<T>(token: string): Promise<T> {
             });
         } catch (e) {
             reject({
-                code: grpc.status.INTERNAL,
+                code: status.INTERNAL,
                 message: 'Verify Token - error',
             });
         }

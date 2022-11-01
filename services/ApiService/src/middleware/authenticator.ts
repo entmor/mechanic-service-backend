@@ -1,4 +1,7 @@
+import { Logger } from '../../../../middleware/Logger/logger';
+
 import * as grpc from '@grpc/grpc-js';
+import { Metadata } from '@grpc/grpc-js';
 import { NextFunction, Request, Response } from 'express';
 import { grpcAuthClient } from '../../../grpcClients';
 import { errorsHandler } from '../errors';
@@ -6,14 +9,16 @@ import { errorsHandler } from '../errors';
 import { GetAuthRequest } from '../../../../grpc/Auth/Auth_pb';
 import { checkToken } from '../../../../helpers/authorization';
 import { User } from '../../../../interface/user.interface';
-import { Metadata } from '@grpc/grpc-js';
 import { getToken } from './getToken';
+import { catchErrorAndResponse } from './catchError';
 
 type RequestApi = Request<unknown, unknown, { token: string }, unknown, unknown>;
 type ResponseApi = Response<
     unknown,
     { user: User; token: string; type: string; authMetadata: any }
 >;
+
+const logger = new Logger('api-service-authenticator');
 
 const isType = async (type: string): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -68,21 +73,16 @@ export const authenticator = async (
                 responseApi.locals.authMetadata = grpcMetadata;
                 responseApi.set('Authorization', `Bearer ${token}`);
 
+                logger.log('debug', {
+                    message: 'Authorization ok',
+                    user,
+                    token,
+                });
+
                 next();
             }
         });
     } catch (error) {
-        /** SEND RESPONSE_ERROR [GET_AUTH] */
-
-        if (error !== null) {
-            const errorResponse = errorsHandler(error);
-            responseApi.status(errorResponse.http_code).json(errorResponse);
-        } else {
-            responseApi.status(500).json({
-                code: grpc.status.INTERNAL,
-                http_code: 500,
-                message: 'Server ERROR',
-            });
-        }
+        catchErrorAndResponse(error, responseApi, 'authenticator');
     }
 };

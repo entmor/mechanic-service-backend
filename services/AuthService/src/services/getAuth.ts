@@ -44,7 +44,6 @@ export const getAuth = (redisClient: Redis) => {
                 grpcUserClient.getUser(grpcGetUserRequest, (error, grpcUserGetResponse) => {
                     if (error) {
                         /** SEND RESPONSE_ERROR [GET_AUTH] */
-                        console.log('titaj errror auth');
                         callback(error);
                     } else {
                         /**

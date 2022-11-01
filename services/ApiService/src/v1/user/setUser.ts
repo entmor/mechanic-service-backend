@@ -5,6 +5,8 @@ import { fromJsonToGrpc } from '../../../../../helpers/grpc';
 import { SetUserRequest } from '../../../../../grpc/User/User_pb';
 import { grpcUserClient } from '../../../../grpcClients';
 import { UserSchema } from '../../../../../grpc/Schema/UserSchema_pb';
+import { Logger } from '../../../../../middleware/Logger/logger';
+import { catchErrorAndResponse } from '../../middleware/catchError';
 
 type OmittedUser = Omit<User, 'id' | 'createdAt' | 'updatedAt'>;
 interface RequestBody extends OmittedUser {
@@ -12,10 +14,16 @@ interface RequestBody extends OmittedUser {
 }
 
 type RequestApi = Request<unknown, unknown, RequestBody>;
-type ResponseApi = Response<{ id: string } | ApiResponse>;
+type ResponseApi = Response<{ id: string } | ApiResponse, { logger: Logger; user: User }>;
 
-export default function ({ body }: RequestApi, responseApi: ResponseApi) {
+export default function (requestApi: RequestApi, responseApi: ResponseApi) {
     try {
+        const { body } = requestApi;
+        const { logger, user } = responseApi.locals;
+
+        /** LOGGER  **/
+        logger.log('debug', body);
+
         /** PREPARE DATE FOR GRPC_REQUEST [SET_USER] **/
         const userSchema = fromJsonToGrpc<UserSchema, User>(new UserSchema(), body, {
             excludeKeys: ['id', 'createdAt', 'sendEmail', 'updatedAt'],
@@ -40,13 +48,19 @@ export default function ({ body }: RequestApi, responseApi: ResponseApi) {
                 responseApi.status(200).json({
                     id: grpcResponse.getId(),
                 });
+
+                /** LOGGER  **/
+                logger.apiResponse(requestApi, {
+                    userId: user.id,
+                    rest: {
+                        setId: grpcResponse.getId(),
+                    },
+                });
             }
         });
         //
     } catch (error) {
         /** ERROR GRPC_REQUEST HANDLER [SET_USER] **/
-        const errorResponse = errorsHandler(error);
-
-        responseApi.status(errorResponse.http_code).json(errorResponse);
+        catchErrorAndResponse(error, responseApi, 'setUser');
     }
 }
