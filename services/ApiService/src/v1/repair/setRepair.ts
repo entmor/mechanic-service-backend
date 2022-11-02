@@ -8,14 +8,23 @@ import {
 } from '../../../../../grpc/Repair/Repair_pb';
 import { Repair } from '../../../../../interface/repair.interface';
 import { grpcRepairClient } from '../../../../grpcClients';
+import { Logger } from '../../../../../middleware/Logger/logger';
+import { User } from '../../../../../interface/user.interface';
+import { catchErrorAndResponse } from '../../middleware/catchError';
 
 type OmittedRepair = Omit<Repair, 'id' | 'createdAt' | 'updatedAt'>;
 
 type RequestApi = Request<any, any, OmittedRepair>;
-type ResponseApi = Response<{ id: string } | ApiResponse>;
+type ResponseApi = Response<{ id: string } | ApiResponse, { logger: Logger; user: User }>;
 
-export default function ({ body }: RequestApi, responseApi: ResponseApi) {
+export default function (requestApi: RequestApi, responseApi: ResponseApi) {
     try {
+        const { body } = requestApi;
+        const { logger, user } = responseApi.locals;
+
+        /** LOGGER  **/
+        logger.log('debug', body);
+
         /** PREPARE DATE FOR GRPC_REQUEST [SET_REPAIR] **/
         const repairSchema = fromJsonToGrpc<RepairSchema, Repair>(new RepairSchema(), body, {
             excludeKeys: ['id', 'partsList', 'costs', 'createdAt', 'updatedAt'],
@@ -25,7 +34,7 @@ export default function ({ body }: RequestApi, responseApi: ResponseApi) {
             body.partsList.forEach((value) => {
                 const part = fromJsonToGrpc<RepairPartSchema, Repair>(
                     new RepairPartSchema(),
-                    value,
+                    value
                 );
 
                 repairSchema.addParts(part);
@@ -47,13 +56,18 @@ export default function ({ body }: RequestApi, responseApi: ResponseApi) {
                 responseApi.json({
                     id: grpcResponse.getId(),
                 });
+
+                /** LOGGER  **/
+                logger.apiResponse(requestApi, {
+                    userId: user.id,
+                    rest: {
+                        setId: grpcResponse.getId(),
+                    },
+                });
             }
         });
     } catch (error) {
-        console.log(error);
-
-        const errorResponse = errorsHandler(error);
-
-        responseApi.status(errorResponse.http_code).json(errorResponse);
+        /** ERROR GRPC_REQUEST HANDLER [SET_REPAIR] **/
+        catchErrorAndResponse(error, responseApi, 'setRepair');
     }
 }

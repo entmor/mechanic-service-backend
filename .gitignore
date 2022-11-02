@@ -1,3 +1,6 @@
 .idea
 .DS_store
 node_modules
+db/redis/*
+.log
+.vscode

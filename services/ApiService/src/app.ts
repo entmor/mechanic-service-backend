@@ -1,11 +1,14 @@
-import express from 'express';
+import express, {ErrorRequestHandler, Request, Response, NextFunction,} from 'express';
 import compression from 'compression'; // compresses requests
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 
 import routes from './v1/routes';
+import { Logger } from '../../../middleware/Logger/logger';
 
 const app = express();
+
+const logger = new Logger('api-service');
 
 //SECURITY
 app.disable('x-powered-by');
@@ -25,7 +28,14 @@ app.use((req, res, next) => {
     next();
 });
 
-// ROUTES
+app.use((req: Request, res: Response, next: NextFunction) => {
+    logger.log('http', `${logger.httpInfo(req)}`);
+
+    res.locals.logger = logger;
+    next();
+});
+
+// ROUTESł
 app.use('/v1', routes);
 
 // 404
@@ -34,10 +44,12 @@ app.use('*', function (req, res) {
         http_code: 404,
         message: 'Wrong URL',
     });
+
+    logger.log('http', `[404] ${logger.httpInfo(req)}`);
 });
 
 app.on('error', function (app) {
-    console.log('error');
+    logger.log('error', `[APP] APP ERROR`);
 });
 
 export const App = app;

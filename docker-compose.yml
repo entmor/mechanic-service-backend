@@ -7,13 +7,14 @@ services:
   api-gateway:
     image: mechanic_service:latest
     container_name: "api-gateway"
-    hostname: apigateway
-    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/ApiService/src/index.ts' ]
+    hostname: api-gateway
+    command: [ 'sh', '-c', 'npm run ts-node --transpileOnly --files ./services/ApiService/src/index.ts' ]
     env_file:
       - build/environments/grpc.env
       - build/environments/production.env
     ports:
-      - 3000:3000
+      - "443:3000"
+      - "80:3000"
     restart: always
   #####################
   # VEHICLE-SERVICE
@@ -23,7 +24,7 @@ services:
     container_name: "vehicle-service"
     hostname: vehicle-service
     restart: always
-    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/VehicleService/src/vehicleService.ts' ]
+    command: [ 'sh', '-c', 'npm run ts-node --transpileOnly --files ./services/VehicleService/src/vehicleService.ts' ]
     env_file:
       - build/environments/grpc.env
       - build/environments/production.env
@@ -35,7 +36,7 @@ services:
     container_name: "client-service"
     hostname: client-service
     restart: always
-    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/ClientService/src/clientService.ts' ]
+    command: [ 'sh', '-c', 'npm run ts-node --transpileOnly --files ./services/ClientService/src/clientService.ts' ]
     env_file:
       - build/environments/grpc.env
       - build/environments/production.env
@@ -47,7 +48,7 @@ services:
     container_name: "repair-service"
     hostname: repair-service
     restart: always
-    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/RepairService/src/RepairService.ts' ]
+    command: [ 'sh', '-c', 'npm run ts-node --transpileOnly --files ./services/RepairService/src/RepairService.ts' ]
     env_file:
       - build/environments/grpc.env
       - build/environments/production.env
@@ -59,9 +60,7 @@ services:
     container_name: "user-service"
     hostname: user-service
     restart: always
-    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/UserService/src/userService.ts' ]
-    volumes:
-      - ./services/UserService/src:/core/services/UserService/src/
+    command: [ 'sh', '-c', 'npm run ts-node --transpileOnly --files ./services/UserService/src/userService.ts' ]
     env_file:
       - build/environments/grpc.env
       - build/environments/production.env
@@ -73,9 +72,7 @@ services:
     container_name: "auth-service"
     hostname: auth-service
     restart: always
-    command: [ 'sh', '-c', 'npm run ts-node-dev --respawn --transpile-only --files ./services/AuthService/src/authService.ts' ]
-    volumes:
-      - ./services/AuthService/src:/core/services/AuthService/src/
+    command: [ 'sh', '-c', 'npm run ts-node --transpileOnly --files ./services/AuthService/src/authService.ts' ]
     env_file:
       - build/environments/grpc.env
       - build/environments/production.env
