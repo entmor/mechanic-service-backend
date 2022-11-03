@@ -5,10 +5,10 @@ export interface Client {
     taxNumber?: number;
     phone: string;
     email: string;
-    gender: string;
-    street: string;
-    city: string;
-    zipCode: string;
+    gender?: string;
+    street?: string;
+    city?: string;
+    zipCode?: string;
     createdAt?: number;
     updatedAt?: number;
 }
