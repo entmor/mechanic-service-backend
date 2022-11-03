@@ -23,6 +23,12 @@ export class Logger {
             defaultMeta: { service },
             format: combine(timestamp(), this.myFormat),
         });
+
+        const transportConsole = new transports.Console();
+
+        if (process.env.NODE_ENV !== 'production') {
+            this.winston.add(transportConsole);
+        }
     }
 
     private createTransport(lvl: Level) {
@@ -32,13 +38,8 @@ export class Logger {
             datePattern: 'YYYY-MM-DD',
             maxFiles: '30d',
         });
-        const transportConsole = new transports.Console();
 
         this.winston.add(transportFile);
-
-        if (process.env.NODE_ENV !== 'production') {
-            this.winston.add(transportConsole);
-        }
 
         return transportFile;
     }
