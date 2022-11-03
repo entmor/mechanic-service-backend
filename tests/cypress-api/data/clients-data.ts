@@ -3,16 +3,16 @@ import { ObjectId } from 'mongodb';
 export default [
     {
         _id: new ObjectId('63630022f9b02907ef9bbfeb'),
-        name: 'Jan Brzechwa',
-        type: 'personal',
+        name: 'Entmor.studio',
+        type: 'business',
+        taxNumber: 7632110347,
         phone: '742-424-124',
-        email: 'sstx.enter@gmail.com',
-        gender: 'male',
-        street: 'Brzechwowa 4',
-        city: 'Januszewo',
-        zipCode: '44-242',
-        createdAt: 1667432482805,
-        updatedAt: 1667432482805,
+        email: 'kontakt@entmor.pl',
+        street: 'Dworcowa 2a',
+        city: 'Wieleń',
+        zipCode: '64-730',
+        createdAt: 1667214412805,
+        updatedAt: 1667614412805,
     },
     {
         _id: new ObjectId('636300b8f9b02907ef9bbfec'),
@@ -20,8 +20,8 @@ export default [
         type: 'personal',
         phone: '742424212',
         gender: 'male',
-        createdAt: 1667432632806,
-        updatedAt: 1667432632806,
+        createdAt: 1666514412805,
+        updatedAt: 1666514412805,
     },
     {
         _id: new ObjectId('63630102f9b02907ef9bbfed'),
@@ -32,8 +32,8 @@ export default [
         street: 'Dworcowa 120/a',
         city: 'Wieleń',
         zipCode: '64-730',
-        createdAt: 1667432706994,
-        updatedAt: 1667432739578,
+        createdAt: 1664514412805,
+        updatedAt: 1664514412805,
     },
     {
         _id: new ObjectId('6363019df9b02907ef9bbfee'),
@@ -44,7 +44,7 @@ export default [
         street: 'Blaugrana 12332',
         city: 'Barcelona',
         zipCode: '42442',
-        createdAt: 1667432861291,
-        updatedAt: 1667432861291,
+        createdAt: 1665314412805,
+        updatedAt: 1665314412805,
     },
-]
+];

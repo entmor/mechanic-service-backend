@@ -48,6 +48,7 @@ services:
     command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --files ./services/ApiService/src/index.ts' ]
     volumes:
       - ./services/ApiService/src:/core/services/ApiService/src/
+      - ./.log:/core/.log
   #    - ./:/core/
     env_file:
       - build/environments/development.env
