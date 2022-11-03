@@ -6,8 +6,8 @@ export default {
     lastname: 'Chwarścianek',
     email: 'bartosz@chwarscianek.pl',
     password:
-        '49d97aac3600d3682ea9dadf774f6a508c2bb02eca4d28bd651cb198afe60482503cf3463b5da34efaf556089aff5a65a12c464da9e92d6399f65075335ecbc9',
-    salt: 'e9f91ba61d85949ecc4788a3914d8e6390694af49410ea3a6b798f81952c33a5',
+        '47d8ca488d6b1e6c6da44a411b81cfc886f16467ef6344aabddce8eb5360ab541f35d0dd6b2ecde9b364605e168a4bbb00bb1f91e2ed74c9a1777c9567123841',
+    salt: 'b34f447725c07c84a98eea73cf96783010df08f923d5821d985587a2acc6a657',
     role: 'admin',
     status: 'active',
     createdAt: 1663514412805,
