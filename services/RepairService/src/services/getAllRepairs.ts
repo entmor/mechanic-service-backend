@@ -70,7 +70,7 @@ export const getAllRepairs = (mongodb: MongoDb<Repair>) => {
             const responseGRPC = new GetAllRepairsResponse();
 
             responseGRPC.setCount(+countRepairs);
-            responseGRPC.setPage(+preparedFindOptions.query.page || 0);
+            responseGRPC.setPage(+preparedFindOptions.query.page || 1);
             responseGRPC.setPerPage(+preparedFindOptions.query.per_page || 0);
             responseGRPC.setSort(preparedFindOptions.query.sort);
             responseGRPC.setIsNextPage(_isNextPage);

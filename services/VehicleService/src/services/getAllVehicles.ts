@@ -52,7 +52,7 @@ export const getAllVehicles = (mongodb: MongoDb<Vehicle>) => {
             const responseGRPC = new GetAllVehiclesResponse();
 
             responseGRPC.setCount(+countVehicles);
-            responseGRPC.setPage(+preparedFindOptions.query.page || 0);
+            responseGRPC.setPage(+preparedFindOptions.query.page || 1);
             responseGRPC.setPerPage(+preparedFindOptions.query.per_page || 0);
             responseGRPC.setSort(preparedFindOptions.query.sort);
             responseGRPC.setIsNextPage(_isNextPage);
