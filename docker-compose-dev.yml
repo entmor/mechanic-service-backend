@@ -27,6 +27,20 @@ services:
     ports:
       - "27018:27017"
   #####################
+  # CYPRESS API
+  #####################
+  cypress:
+    image: mechanic_service:dev
+    container_name: cypress
+    hostname: cypress
+    command: [ 'sh', '-c', './build/wait-for/wait-for mongo:27017 -- npm run ts-node-dev --respawn --files ./tests/cypress-api/index.ts' ]
+    ports:
+      - "3001:3001"
+    env_file:
+      - build/environments/development.env
+    volumes:
+      - ./tests/cypress-api:/core/tests/cypress-api
+  #####################
   # API GATEWAY
   #####################
   api-gateway:
