@@ -22,7 +22,7 @@ export const getAllClients = (mongodb: MongoDb<Client>) => {
         try {
             /**  PREPARE DATA FROM GRPC **/
             const where = request.hasWhere() ? JSON.parse(request.getWhere()) : {};
-            const preparedWhere = await prepareFindFilter<Client>(FindClientsFilter, where)
+            const preparedWhere = await prepareFindFilter<Client>(FindClientsFilter, where);
 
             const preparedFindOptions = prepareFindOptions({
                 per_page: +request.getPerPage(),
@@ -51,8 +51,8 @@ export const getAllClients = (mongodb: MongoDb<Client>) => {
             const responseGRPC = new GetAllClientsResponse();
 
             responseGRPC.setCount(+countClients);
-            responseGRPC.setPage(+preparedFindOptions.query.page);
-            responseGRPC.setPerPage(+preparedFindOptions.findOptions.limit);
+            responseGRPC.setPage(+preparedFindOptions.query.page || 1);
+            responseGRPC.setPerPage(+preparedFindOptions.query.per_page || 0);
             responseGRPC.setSort(preparedFindOptions.query.sort);
             responseGRPC.setIsNextPage(_isNextPage);
 
@@ -67,6 +67,7 @@ export const getAllClients = (mongodb: MongoDb<Client>) => {
             callback(null, responseGRPC);
             //
         } catch (e) {
+            console.log(e);
             /** SEND RESPONSE_ERROR [GET_ALL_CLIENTS] **/
             callback({
                 code: e.code || grpc.status.INTERNAL,

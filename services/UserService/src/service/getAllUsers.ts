@@ -47,8 +47,8 @@ export const getAllUsers = (mongodb: MongoDb<User>) => {
             const responseGRPC = new GetAllUsersResponse();
 
             responseGRPC.setCount(+countUsers);
-            responseGRPC.setPage(+preparedFindOptions.query.page);
-            responseGRPC.setPerPage(+preparedFindOptions.findOptions.limit);
+            responseGRPC.setPage(+preparedFindOptions.query.page || 1);
+            responseGRPC.setPerPage(+preparedFindOptions.query.per_page || 0);
             responseGRPC.setSort(preparedFindOptions.query.sort);
             responseGRPC.setIsNextPage(_isNextPage);
 
