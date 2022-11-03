@@ -6,7 +6,7 @@ message ClientSchema{
   string id = 1;
   string name = 2;
   string type = 3;
-  optional int32 tax_number = 4;
+  optional int64 tax_number = 4;
   string phone = 5;
   optional string email = 6;
   optional string gender = 7;
