@@ -22,4 +22,5 @@ USER node
 COPY --chown=node:node --from=dev /core /core
 WORKDIR /core
 RUN rm -r node_modules
+RUN rm -r tests
 RUN npm ci --only=production
