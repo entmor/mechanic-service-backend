@@ -1,6 +1,7 @@
-import { Router, Request, Response } from 'express';
-import { MongoClient, ObjectId } from 'mongodb';
-import {usersData, clientsData, vehiclesData, repairsData} from './data';
+import { Request, Response, Router } from 'express';
+import { MongoClient } from 'mongodb';
+
+import { clientsData, repairsData, usersData, vehiclesData } from './data';
 
 const URL_MONGO = process.env.MONGO_URL;
 
@@ -22,7 +23,7 @@ routes.get('/restart-db', async (req: Request, res: Response) => {
 
         /** CLEAR AND ADD USERS **/
         await users.deleteMany({});
-        await users.insertOne(usersData);
+        await users.insertMany(usersData);
 
         /** CLEAR AND ADD CLIENTS **/
         await clients.deleteMany({});
